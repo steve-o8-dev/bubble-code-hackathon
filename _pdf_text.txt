@@ -1,0 +1,125 @@
+---PAGE 0---
+PRUDENTIAL PITCH DECK
+PRU.NAVIGATOR
+An Agentic AI Insurance Advisory Support Concept
+• AI INNOVATION PROPOSAL• 
+How might we design an agentic AI "Insurance Navigator" that helps people understand and compare insurance coverage by
+simplifying policy language,
+ asking thoughtful questions, and
+supporting financial representatives in recommending suitable options to the customer?
+
+---PAGE 1---
+PRUDENTIAL PITCH DECK Slide 2 of 7
+Who Weʼre Building For
+Primary user: Prudential Financial Representatives
+Financial Representatives: day-in-the-life
+Before every client meeting, 
+1.a consultant manually reads the policy docs ⟶ 
+2.guesses at the clientʼs coverage gaps ⟶ 
+3.builds a product comparison from scratch. 
+Thatʼs 2-3 hours of prep - per client.
+ 
+2 quick facts about financial representatives:
+Manages 10-30 active clients at any time
+MAS-licensed - accountable for every
+recommendation they make
+Why Consultant-First? Still human-in-the-loop
+MAS regulations: only a licensed person can make a
+financial recommendation
+AI prepares and shortlists: the consultant reviews,
+adjusts, and delivers
+This keeps the human in control and the firm fully
+compliant
+Aligned with Prudentialʼs own AI lab 
+
+---PAGE 2---
+PRUDENTIAL PITCH DECK Slide 3 of 7
+[Policy Explainer]
+Simplify Agent
+1.Consultant drops in a Prudential policy PDF. 
+2.The agent reads it and instantly returns a
+plain-English breakdown - whatʼs covered,
+whatʼs not, and every exclusion flagged
+honestly. 
+No fine print buried. No jargon.
+[Customerʼs background discovery]
+Discover Agent
+Instead of a long form, option given to the
+client logs in via Singpass.
+⟶ Client data (income, CPF, dependents)
+- auto-populated.
+The agent then asks 2-3 smart follow-up
+questions based on whatʼs missing:
+life stage, existing coverage, priorities.
+The output: the clean client complete
+needs profile
+[FR Decision Aid]
+Recommend Agent
+With other agentsʼ help, this produces a
+ranked shortlist of suitable Prudential
+products - each with a plain reason why it
+fits and what the tradeoffs are.
+lands on consultantʼs dashboard for them
+to review, adjust, and approves before
+anything goes to the client.
+Concept: 3-Engine Architecture
+
+---PAGE 3---
+PRUDENTIAL PITCH DECK Slide 4 of 7
+Policy in
+FR drops a Prudential PDF
+fact sheet into the tool
+Plain English
+AI returns a clean
+summary with
+exclusions highlighted
+Singpass Pull
+Clientʼs income, CPF &
+family profile auto-filled
+Gap Analysis
+AI maps 
+coverage owned
+ Vs
+ coverage needed
+The Demo Flow
+Consultantʼs review
+Consultant reviews
+the shortlist and
+delievrs to client
+One killer flow that proves the entire concept
+
+---PAGE 4---
+PRUDENTIAL PITCH DECK Slide 5 of 7
+Tech Stack
+
+---PAGE 5---
+PRUDENTIAL PITCH DECK Slide 5 of 7
+Workflows
+
+---PAGE 6---
+PRUDENTIAL PITCH DECK Slide 7 of 7
+For Consultants
+No More Fine Print Surprises
+Consultants can now explain exactly
+whatʼs covered, whatʼs excluded, and
+why a product fits - leading to confident,
+informed decision.
+-Clearer conversations
+For Their Clients
+Less Prep, Better Advice
+Reduces preparation cycles from hours
+to minutes. Equips representatives with
+tailored customer insights, ranked
+product shortlist, and reasons ready.
+-More time for relationships, less time
+on admin
+For Prudential
+Designed Around Accountability
+Scalable, compliant advisory. Every
+recommendation consultant-approved,
+every interaction audit-trailed. Quality
+stays consistent as distribution grows.
+-Audit-Ready, Always
+Value Generation: Stakeholder Impact
+“AI prepares. The consultant decides.
+The customer wins.ˮ
