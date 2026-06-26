@@ -98,7 +98,7 @@ export default function Layout({ children }) {
         <main className="flex-1 px-8 py-7 max-w-[1280px] w-full mx-auto">{children}</main>
 
         <footer className="px-8 py-4 text-center text-[11px] text-pru-slate border-t border-pru-line">
-          PRU.NAVIGATOR — Hackathon concept prototype · Presentation use only · “AI prepares. The consultant decides. The customer wins.”
+          PRU.NAVIGATOR — Hackathon concept prototype · “AI prepares. The consultant decides. The customer wins.”
         </footer>
       </div>
     </div>

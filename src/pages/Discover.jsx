@@ -64,7 +64,16 @@ export default function Discover() {
 
         {phase === 'select' ? (
           <div>
-            <SectionTitle kicker="Step 1" title="Select a client" icon="user" />
+            <SectionTitle
+              kicker="Step 1"
+              title="Select a client"
+              icon="user"
+              right={
+                <button disabled={!selected} onClick={() => setPhase('running')} className="btn-primary">
+                  <Icon name="bolt" className="w-4 h-4" /> Start analysis
+                </button>
+              }
+            />
             <div className="space-y-3">
               {clients.map((c) => (
                 <button
@@ -89,9 +98,6 @@ export default function Discover() {
                 </button>
               ))}
             </div>
-            <button disabled={!selected} onClick={() => setPhase('running')} className="btn-primary mt-5">
-              <Icon name="bolt" className="w-4 h-4" /> Start analysis
-            </button>
           </div>
         ) : (
           <div>

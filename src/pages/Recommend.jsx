@@ -66,7 +66,16 @@ export default function Recommend() {
 
         {phase === 'select' ? (
           <div>
-            <SectionTitle kicker="Step 1" title="Select a client (with a completed needs profile)" icon="user" />
+            <SectionTitle
+              kicker="Step 1"
+              title="Select a client (with a completed needs profile)"
+              icon="user"
+              right={
+                <button disabled={!selected} onClick={() => setPhase('running')} className="btn-primary shrink-0">
+                  <Icon name="bolt" className="w-4 h-4" /> Generate shortlist
+                </button>
+              }
+            />
             <div className="space-y-3">
               {clients.map((c) => (
                 <button
@@ -88,9 +97,6 @@ export default function Recommend() {
                 </button>
               ))}
             </div>
-            <button disabled={!selected} onClick={() => setPhase('running')} className="btn-primary mt-5">
-              <Icon name="bolt" className="w-4 h-4" /> Generate shortlist
-            </button>
           </div>
         ) : (
           <div>

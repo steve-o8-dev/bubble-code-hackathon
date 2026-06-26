@@ -60,7 +60,16 @@ export default function Simplify() {
 
         {phase === 'select' ? (
           <div>
-            <SectionTitle kicker="Step 1" title="Select a policy to analyse" icon="doc" />
+            <SectionTitle
+              kicker="Step 1"
+              title="Select a policy to analyse"
+              icon="doc"
+              right={
+                <button disabled={!selected} onClick={start} className="btn-primary">
+                  <Icon name="bolt" className="w-4 h-4" /> Start analysis
+                </button>
+              }
+            />
             <div className="grid sm:grid-cols-2 gap-3">
               {policies.map((p) => (
                 <button
@@ -83,9 +92,6 @@ export default function Simplify() {
                 </button>
               ))}
             </div>
-            <button disabled={!selected} onClick={start} className="btn-primary mt-5 w-full sm:w-auto">
-              <Icon name="bolt" className="w-4 h-4" /> Start analysis
-            </button>
           </div>
         ) : (
           <div>
