@@ -34,6 +34,11 @@ const agents = [
 
 export default function Dashboard() {
   const navigate = useNavigate()
+
+  // KPIs are counted off the audit trail, so the numbers on the dashboard are
+  // the same events the governance page lists.
+  const agentRuns = auditTrail.filter((a) => a.actor === 'AI Agent').length
+
   return (
     <div className="space-y-7">
       {/* Hero */}
@@ -42,11 +47,11 @@ export default function Dashboard() {
         <div className="absolute right-24 bottom-0 w-48 h-48 rounded-full bg-pru-red/10 blur-2xl" />
         <div className="relative">
           <Badge tone="red" icon="spark">3-Engine Agentic Architecture</Badge>
-          <h1 className="mt-3 text-3xl font-extrabold tracking-tight max-w-2xl">
-            Cut client prep from <span className="text-pru-red">hours to minutes</span> — without giving up control.
+          <h1 className="mt-3 text-[26px] font-extrabold tracking-tight">
+            Cut client prep from <span className="text-pru-red">hours to minutes</span> without giving up control.
           </h1>
-          <p className="mt-2 text-white/60 max-w-2xl">
-            PRU.NAVIGATOR prepares and shortlists. You — the MAS-licensed consultant — review, adjust and approve.
+          <p className="mt-2 text-[13px] text-white/60 max-w-2xl">
+            PRU.NAVIGATOR prepares and shortlists. The MAS-licensed consultant review, adjust and approve.<br></br>
             Every step is sourced, confidence-scored and audit-trailed.
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
@@ -64,7 +69,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <Stat value={clients.length} label="Active clients" icon="user" tone="ink" />
         <Stat value={policies.length} label="Valid Prudential policies" icon="doc" tone="red" />
-        <Stat value="~2.5 hrs" label="Prep saved / client" icon="clock" tone="good" />
+        <Stat value={agentRuns} label="Agent analyses run" icon="cpu" tone="good" />
         <Stat value="100%" label="Consultant-approved" icon="lock" tone="warn" />
       </div>
 
@@ -78,12 +83,16 @@ export default function Dashboard() {
               to={a.to}
               className="card p-5 group hover:shadow-pop hover:-translate-y-0.5 transition-all"
             >
-              <div className="w-11 h-11 rounded-md bg-bad-soft text-pru-red flex items-center justify-center group-hover:bg-pru-red group-hover:text-white transition-colors">
-                <Icon name={a.icon} className="w-6 h-6" />
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-md bg-bad-soft text-pru-red flex items-center justify-center shrink-0 group-hover:bg-pru-red group-hover:text-white transition-colors">
+                  <Icon name={a.icon} className="w-6 h-6" />
+                </div>
+                <div className="min-w-0">
+                  <div className="label-kicker">{a.kicker}</div>
+                  <h3 className="text-lg font-extrabold text-pru-ink">{a.title}</h3>
+                </div>
               </div>
-              <div className="label-kicker mt-4">{a.kicker}</div>
-              <h3 className="text-lg font-extrabold text-pru-ink">{a.title}</h3>
-              <p className="mt-1.5 text-sm text-pru-slate leading-relaxed">{a.desc}</p>
+              <p className="mt-4 text-sm text-pru-slate leading-relaxed">{a.desc}</p>
               <div className="mt-4 flex items-center gap-1.5 text-sm font-bold text-pru-red">
                 {a.cta} <Icon name="arrow" className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>

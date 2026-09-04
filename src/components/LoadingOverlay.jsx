@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 
 // Full-screen dimmed loading state shown while an agent "runs".
 // Eases in over the whole viewport, holds for durationMs, fades back out,
@@ -26,7 +27,9 @@ export default function LoadingOverlay({ label, sublabel, durationMs = 2500, onD
     }
   }, [durationMs])
 
-  return (
+  // Portalled to <body>: mounted inside the page it sat in the sticky header's
+  // stacking context, so the header strip stayed uncovered at the top.
+  return createPortal(
     <div
       className={`fixed inset-0 z-[200] flex items-center justify-center transition-opacity ${
         shown ? 'opacity-100 duration-500 ease-in' : 'opacity-0 duration-200 ease-out'
@@ -57,6 +60,7 @@ export default function LoadingOverlay({ label, sublabel, durationMs = 2500, onD
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }

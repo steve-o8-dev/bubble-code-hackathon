@@ -111,9 +111,9 @@ export function Stat({ value, label, tone = 'ink', icon }) {
   const tones = { ink: 'text-pru-ink', red: 'text-pru-red', good: 'text-good', warn: 'text-warn' }
   return (
     <div className="card p-4">
-      <div className="flex items-center justify-between">
-        <span className="label-kicker">{label}</span>
-        {icon && <Icon name={icon} className="w-4 h-4 text-pru-slate" />}
+      <div className="flex items-center justify-between gap-2">
+        <span className="label-kicker text-pru-ink font-extrabold">{label}</span>
+        {icon && <Icon name={icon} className="w-4 h-4 text-pru-ink shrink-0" strokeWidth={2.4} />}
       </div>
       <div className={`mt-2 text-2xl font-extrabold ${tones[tone]}`}>{value}</div>
     </div>

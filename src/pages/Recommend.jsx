@@ -31,22 +31,26 @@ export default function Recommend() {
   }
 
   const header = (
-    <div className="flex items-start justify-between flex-wrap gap-4">
-      <div>
-        <Badge tone="red" icon="recommend">Recommend Agent · Decision Aid</Badge>
-        <h1 className="mt-1 text-[22px] font-extrabold text-pru-ink">Ranked product shortlist — compared</h1>
-        <p className="text-sm text-pru-slate mt-1 max-w-4xl">
-          A shortlist ranked on what the client needs — never on what pays the most, with reasons, tradeoffs and sources.
-        </p>
-      </div>
-      <div className="flex items-center gap-3">
-        {phase !== 'select' && (
-          <button onClick={reset} className="btn-ghost">
-            <Icon name="arrow" className="w-4 h-4 rotate-180" /> New shortlist
-          </button>
-        )}
+    <div>
+      <Badge tone="red" icon="recommend">Recommend Agent · Decision Aid</Badge>
+      <div className="mt-1 flex items-center gap-2 flex-wrap">
+        <h1 className="text-[22px] font-extrabold text-pru-ink">Ranked product shortlist — compared</h1>
         <SkillCard skill={skills.recommend} accentTitle="recommend.SKILLS.md" live={phase === 'running'} />
       </div>
+      <p className="text-sm text-pru-slate mt-1 max-w-4xl">
+        A shortlist ranked on what the client needs — never on what pays the most, with reasons, tradeoffs and sources.
+      </p>
+    </div>
+  )
+
+  const stepsRow = () => (
+    <div className="flex items-center justify-between gap-4 flex-wrap">
+      <FlowSteps phase={phase} approved={approved} />
+      {phase !== 'select' && (
+        <button onClick={reset} className="btn-primary">
+          <Icon name="arrow" className="w-4 h-4 rotate-180" /> New shortlist
+        </button>
+      )}
     </div>
   )
 
@@ -54,7 +58,7 @@ export default function Recommend() {
     return (
       <div className="space-y-6">
         {header}
-        <FlowSteps phase={phase} approved={approved} />
+        {stepsRow()}
         <Result client={client} rec={rec} approved={approved} onApprove={() => setApproved(true)} />
       </div>
     )
@@ -63,7 +67,7 @@ export default function Recommend() {
   return (
     <div className="space-y-6">
       {header}
-      <FlowSteps phase={phase} approved={approved} />
+      {stepsRow()}
 
       <div className="card p-5">
         <SectionTitle
@@ -76,24 +80,29 @@ export default function Recommend() {
             </button>
           }
         />
-        <div className="space-y-3">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {clients.map((c) => (
             <button
               key={c.id}
               onClick={() => setSelected(c.id)}
-              className={`card w-full p-4 text-left flex items-center gap-4 transition-all hover:-translate-y-0.5 ${
+              className={`card p-4 text-left flex flex-col transition-all hover:-translate-y-0.5 ${
                 selected === c.id ? 'ring-2 ring-pru-red border-pru-red' : 'hover:shadow-pop'
               }`}
             >
-              <div className={`w-12 h-12 rounded-full ${c.avatarTone} text-white flex items-center justify-center font-bold shrink-0`}>
-                {c.name.split(' ').map((w) => w[0]).slice(0, 2).join('')}
+              <div className="flex items-start justify-between gap-2">
+                <div className={`w-11 h-11 rounded-full ${c.avatarTone} text-white flex items-center justify-center font-bold shrink-0`}>
+                  {c.name.split(' ').map((w) => w[0]).slice(0, 2).join('')}
+                </div>
+                <Badge tone="good" icon="check">Profile ready</Badge>
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="font-extrabold text-pru-ink">{c.name}</div>
-                <div className="text-xs text-pru-slate">{c.lifeStage} · top need: {getAnalysis(c.id)?.discover.needsProfile.topNeed}</div>
+              <div className="mt-3 flex items-center gap-1.5">
+                <span className="font-extrabold text-pru-ink truncate">{c.name}</span>
+                {selected === c.id && <Icon name="check" className="w-4 h-4 text-pru-red shrink-0" strokeWidth={3} />}
               </div>
-              <Badge tone="good" icon="check">Profile ready</Badge>
-              {selected === c.id && <Icon name="check" className="w-5 h-5 text-pru-red shrink-0" strokeWidth={3} />}
+              <div className="text-xs text-pru-slate">{c.lifeStage}</div>
+              <div className="mt-3 pt-3 border-t border-pru-line text-xs text-pru-slate">
+                Top need: <span className="font-semibold text-pru-ink">{getAnalysis(c.id)?.discover.needsProfile.topNeed}</span>
+              </div>
             </button>
           ))}
         </div>
@@ -114,19 +123,21 @@ function FlowSteps({ phase, approved }) {
   const steps = ['Select client', 'Agent ranking', 'Compare & approve']
   const idx = phase === 'select' ? 0 : phase === 'running' ? 1 : 2
   return (
-    <div className="flex items-center gap-2 text-sm flex-wrap">
+    <div className="flex items-center text-sm flex-wrap">
       {steps.map((s, i) => (
-        <div key={s} className="flex items-center gap-2">
+        <div key={s} className="flex items-center">
           <span className={`flex items-center gap-2 rounded-full px-3 py-1.5 font-semibold ${i <= idx ? 'bg-pru-red text-white' : 'bg-white text-pru-slate border border-pru-line'}`}>
             <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs ${i <= idx ? 'bg-white/25' : 'bg-pru-mist'}`}>
               {i < idx ? <Icon name="check" className="w-3 h-3" strokeWidth={3} /> : i + 1}
             </span>
             {s}
           </span>
-          {i < steps.length - 1 && <Icon name="arrow" className="w-4 h-4 text-pru-line" />}
+          {i < steps.length - 1 && (
+            <span className="h-px w-8 shrink-0 bg-pru-ink" />
+          )}
         </div>
       ))}
-      {approved && <Badge tone="good" icon="check">Approved by consultant</Badge>}
+      {approved && <span className="ml-3"><Badge tone="good" icon="check">Approved by consultant</Badge></span>}
     </div>
   )
 }

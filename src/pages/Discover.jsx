@@ -29,22 +29,26 @@ export default function Discover() {
   }
 
   const header = (
-    <div className="flex items-start justify-between flex-wrap gap-4">
-      <div>
-        <Badge tone="red" icon="discover">Discover Agent · Needs Profiler</Badge>
-        <h1 className="mt-1 text-[22px] font-extrabold text-pru-ink">Coverage gaps & follow-up questions</h1>
-        <p className="text-sm text-pru-slate mt-1 max-w-4xl">
-          Client data is auto-pulled via Singpass MCP — the agent maps coverage gaps and drafts your follow-up questions.
-        </p>
-      </div>
-      <div className="flex items-center gap-3">
-        {phase !== 'select' && (
-          <button onClick={reset} className="btn-ghost">
-            <Icon name="arrow" className="w-4 h-4 rotate-180" /> New analysis
-          </button>
-        )}
+    <div>
+      <Badge tone="red" icon="discover">Discover Agent · Needs Profiler</Badge>
+      <div className="mt-1 flex items-center gap-2 flex-wrap">
+        <h1 className="text-[22px] font-extrabold text-pru-ink">Coverage gaps & follow-up questions</h1>
         <SkillCard skill={skills.discover} accentTitle="discover.SKILLS.md" live={phase === 'running'} />
       </div>
+      <p className="text-sm text-pru-slate mt-1 max-w-4xl">
+        Client data is auto-pulled via Singpass MCP — the agent maps coverage gaps and drafts your follow-up questions.
+      </p>
+    </div>
+  )
+
+  const stepsRow = () => (
+    <div className="flex items-center justify-between gap-4 flex-wrap">
+      <FlowSteps phase={phase} />
+      {phase !== 'select' && (
+        <button onClick={reset} className="btn-primary">
+          <Icon name="arrow" className="w-4 h-4 rotate-180" /> New analysis
+        </button>
+      )}
     </div>
   )
 
@@ -52,7 +56,7 @@ export default function Discover() {
     return (
       <div className="space-y-6">
         {header}
-        <FlowSteps phase={phase} />
+        {stepsRow()}
         <Result client={client} analysis={analysis} onRecommend={() => navigate('/recommend', { state: { clientId: client.id } })} />
       </div>
     )
@@ -61,7 +65,7 @@ export default function Discover() {
   return (
     <div className="space-y-6">
       {header}
-      <FlowSteps phase={phase} />
+      {stepsRow()}
 
       <div className="card p-5">
         <SectionTitle
@@ -74,27 +78,30 @@ export default function Discover() {
             </button>
           }
         />
-        <div className="space-y-3">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {clients.map((c) => (
             <button
               key={c.id}
               onClick={() => setSelected(c.id)}
-              className={`card w-full p-4 text-left flex items-center gap-4 transition-all hover:-translate-y-0.5 ${
+              className={`card p-4 text-left flex flex-col transition-all hover:-translate-y-0.5 ${
                 selected === c.id ? 'ring-2 ring-pru-red border-pru-red' : 'hover:shadow-pop'
               }`}
             >
-              <div className={`w-12 h-12 rounded-full ${c.avatarTone} text-white flex items-center justify-center font-bold shrink-0`}>
-                {c.name.split(' ').map((w) => w[0]).slice(0, 2).join('')}
+              <div className="flex items-start justify-between gap-2">
+                <div className={`w-11 h-11 rounded-full ${c.avatarTone} text-white flex items-center justify-center font-bold shrink-0`}>
+                  {c.name.split(' ').map((w) => w[0]).slice(0, 2).join('')}
+                </div>
+                <span className="text-[11px] font-mono text-pru-slate">{c.nric}</span>
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="font-extrabold text-pru-ink">{c.name}</div>
-                <div className="text-xs text-pru-slate">{c.age} · {c.lifeStage} · {c.occupation}</div>
+              <div className="mt-3 flex items-center gap-1.5">
+                <span className="font-extrabold text-pru-ink truncate">{c.name}</span>
+                {selected === c.id && <Icon name="check" className="w-4 h-4 text-pru-red shrink-0" strokeWidth={3} />}
               </div>
-              <div className="hidden sm:block text-right">
-                <div className="text-xs font-mono text-pru-slate">{c.nric}</div>
-                <div className="text-xs text-pru-slate">{sgd(c.singpass.annualIncome)}/yr · {c.singpass.dependents} dep.</div>
+              <div className="text-xs text-pru-slate">{c.age} · {c.lifeStage}</div>
+              <div className="text-xs text-pru-slate truncate">{c.occupation}</div>
+              <div className="mt-3 pt-3 border-t border-pru-line text-xs text-pru-slate">
+                {sgd(c.singpass.annualIncome)}/yr · {c.singpass.dependents} dep.
               </div>
-              {selected === c.id && <Icon name="check" className="w-5 h-5 text-pru-red shrink-0" strokeWidth={3} />}
             </button>
           ))}
         </div>
@@ -115,16 +122,18 @@ function FlowSteps({ phase }) {
   const steps = ['Select client', 'Agent analysis', 'Gaps & questions']
   const idx = phase === 'select' ? 0 : phase === 'running' ? 1 : 2
   return (
-    <div className="flex items-center gap-2 text-sm">
+    <div className="flex items-center text-sm">
       {steps.map((s, i) => (
-        <div key={s} className="flex items-center gap-2">
+        <div key={s} className="flex items-center">
           <span className={`flex items-center gap-2 rounded-full px-3 py-1.5 font-semibold ${i <= idx ? 'bg-pru-red text-white' : 'bg-white text-pru-slate border border-pru-line'}`}>
             <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs ${i <= idx ? 'bg-white/25' : 'bg-pru-mist'}`}>
               {i < idx ? <Icon name="check" className="w-3 h-3" strokeWidth={3} /> : i + 1}
             </span>
             {s}
           </span>
-          {i < steps.length - 1 && <Icon name="arrow" className="w-4 h-4 text-pru-line" />}
+          {i < steps.length - 1 && (
+            <span className="h-px w-8 shrink-0 bg-pru-ink" />
+          )}
         </div>
       ))}
     </div>

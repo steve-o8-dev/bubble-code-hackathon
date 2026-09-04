@@ -27,11 +27,21 @@ export default function Simplify() {
     if (phase !== 'select') window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [phase])
 
-  const start = () => setPhase('running')
+  // A catalogue policy already ships an approved breakdown, so there is no
+  // analysis to run: only an uploaded document goes through the agent overlay.
+  const start = () => (tab === 'upload' ? setPhase('running') : finish())
 
   // Only a fresh run is logged — reopening a past analysis must not re-log it.
   const finish = () => {
     setHistory(addHistoryEntry(active))
+    setPhase('result')
+  }
+
+  // Opening a policy straight from its card: select it and show the approved
+  // breakdown in one step, no agent run.
+  const openPolicy = (id) => {
+    setSelected(id)
+    setHistory(addHistoryEntry(getPolicy(id)))
     setPhase('result')
   }
 
@@ -49,22 +59,26 @@ export default function Simplify() {
   }
 
   const header = (
-    <div className="flex items-start justify-between flex-wrap gap-4">
-      <div>
-        <Badge tone="red" icon="simplify">Simplify Agent · Policy Explainer</Badge>
-        <h1 className="mt-1 text-[22px] font-extrabold text-pru-ink">Plain-English policy breakdown</h1>
-        <p className="text-sm text-pru-slate mt-1 max-w-4xl">
-          Pick a Prudential policy or upload any insurer’s PDF — the agent returns an honest plain-English breakdown.
-        </p>
-      </div>
-      <div className="flex items-center gap-3">
-        {phase !== 'select' && (
-          <button onClick={reset} className="btn-ghost">
-            <Icon name="arrow" className="w-4 h-4 rotate-180" /> New analysis
-          </button>
-        )}
+    <div>
+      <Badge tone="red" icon="simplify">Simplify Agent · Policy Explainer</Badge>
+      <div className="mt-1 flex items-center gap-2 flex-wrap">
+        <h1 className="text-[22px] font-extrabold text-pru-ink">Plain-English policy breakdown</h1>
         <SkillCard skill={skills.simplify} accentTitle="simplify.SKILLS.md" live={phase === 'running'} />
       </div>
+      <p className="text-sm text-pru-slate mt-1 max-w-4xl">
+        Pick a Prudential policy or upload any insurer’s PDF — the agent returns an honest plain-English breakdown.
+      </p>
+    </div>
+  )
+
+  const stepsRow = (source) => (
+    <div className="flex items-center justify-between gap-4 flex-wrap">
+      <FlowSteps phase={phase} source={source} />
+      {phase !== 'select' && (
+        <button onClick={reset} className="btn-primary">
+          <Icon name="arrow" className="w-4 h-4 rotate-180" /> New analysis
+        </button>
+      )}
     </div>
   )
 
@@ -72,7 +86,7 @@ export default function Simplify() {
     return (
       <div className="space-y-6">
         {header}
-        <FlowSteps phase={phase} source={policy?.uploaded ? 'upload' : 'catalogue'} />
+        {stepsRow(policy?.uploaded ? 'upload' : 'catalogue')}
         <Result policy={policy} />
       </div>
     )
@@ -81,29 +95,10 @@ export default function Simplify() {
   return (
     <div className="space-y-6">
       {header}
-      <FlowSteps phase={phase} source={tab === 'upload' ? 'upload' : 'catalogue'} />
+      {stepsRow(tab === 'upload' ? 'upload' : 'catalogue')}
 
       <div className="card p-5">
-        <SectionTitle
-          kicker="Step 1"
-          title="Choose a document"
-          icon="doc"
-          right={
-            tab !== 'history' && (
-              <button disabled={!active} onClick={start} className="btn-primary">
-                {tab === 'upload' ? (
-                  <>
-                    <Icon name="bolt" className="w-4 h-4" /> Analyse document
-                  </>
-                ) : (
-                  <>
-                    <Icon name="doc" className="w-4 h-4" /> View breakdown
-                  </>
-                )}
-              </button>
-            )
-          }
-        />
+        <SectionTitle kicker="Step 1" title="Choose a document" icon="doc" />
         <SourceTabs
           tab={tab}
           onChange={setTab}
@@ -120,31 +115,51 @@ export default function Simplify() {
             </p>
             <div className="grid sm:grid-cols-2 gap-3">
               {policies.map((p) => (
-                <button
+                <div
                   key={p.id}
                   onClick={() => setSelected(p.id)}
-                  className={`card p-4 text-left transition-all hover:-translate-y-0.5 ${
+                  className={`card p-4 text-left flex flex-col cursor-pointer transition-all hover:-translate-y-0.5 ${
                     selected === p.id ? 'ring-2 ring-pru-red border-pru-red' : 'hover:shadow-pop'
                   }`}
                 >
-                  <div className="flex items-center justify-between">
-                    <Badge tone="slate">{p.category}</Badge>
-                    {selected === p.id && <Icon name="check" className="w-5 h-5 text-pru-red" strokeWidth={3} />}
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-center gap-1.5">
+                      <Badge tone="slate">{p.category}</Badge>
+                      {selected === p.id && <Icon name="check" className="w-4 h-4 text-pru-red" strokeWidth={3} />}
+                    </div>
+                    <span className="text-[11px] text-pru-slate font-mono text-right shrink-0">
+                      {p.pages} pp · {p.premiumFrom}
+                    </span>
                   </div>
                   <h3 className="mt-2 font-extrabold text-pru-ink">{p.name}</h3>
                   <p className="text-xs text-pru-slate mt-0.5">{p.tagline}</p>
-                  <div className="mt-3 flex items-center justify-between text-[11px] text-pru-slate font-mono">
-                    <span>{p.docRef}</span>
-                    <span>{p.pages} pp · {p.premiumFrom}</span>
+                  <div className="mt-3 flex items-center justify-between gap-2">
+                    <span className="text-[11px] text-pru-slate font-mono">{p.docRef}</span>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        openPolicy(p.id)
+                      }}
+                      className="btn-primary px-3 py-[7px] text-xs shrink-0"
+                    >
+                      <Icon name="doc" className="w-3.5 h-3.5" /> View breakdown
+                    </button>
                   </div>
-                </button>
+                </div>
               ))}
             </div>
           </div>
         )}
 
         {tab === 'upload' && (
-          <UploadPanel file={upload} onFile={setUpload} onClear={() => setUpload(null)} />
+          <div className="animate-fade-up">
+            <UploadPanel file={upload} onFile={setUpload} onClear={() => setUpload(null)} />
+            <div className="mt-4 flex justify-end">
+              <button disabled={!active} onClick={start} className="btn-primary">
+                <Icon name="bolt" className="w-4 h-4" /> Analyse document
+              </button>
+            </div>
+          </div>
         )}
 
         {tab === 'history' && (
@@ -158,12 +173,8 @@ export default function Simplify() {
 
       {phase === 'running' && (
         <LoadingOverlay
-          label={tab === 'upload' ? 'Simplify Agent' : 'Prudential policy library'}
-          sublabel={
-            tab === 'upload'
-              ? `Analysing “${policy.name}”…`
-              : `Retrieving verified breakdown — ${policy.name}…`
-          }
+          label="Simplify Agent"
+          sublabel={`Analysing “${policy.name}”…`}
           onDone={finish}
         />
       )}
@@ -466,9 +477,9 @@ function FlowSteps({ phase, source = 'catalogue' }) {
       : ['Select policy', 'Retrieve breakdown', 'Simplified summary']
   const idx = phase === 'select' ? 0 : phase === 'running' ? 1 : 2
   return (
-    <div className="flex items-center gap-2 text-sm">
+    <div className="flex items-center text-sm">
       {steps.map((s, i) => (
-        <div key={s} className="flex items-center gap-2">
+        <div key={s} className="flex items-center">
           <span
             className={`flex items-center gap-2 rounded-full px-3 py-1.5 font-semibold ${
               i <= idx ? 'bg-pru-red text-white' : 'bg-white text-pru-slate border border-pru-line'
@@ -479,7 +490,9 @@ function FlowSteps({ phase, source = 'catalogue' }) {
             </span>
             {s}
           </span>
-          {i < steps.length - 1 && <Icon name="arrow" className="w-4 h-4 text-pru-line" />}
+          {i < steps.length - 1 && (
+            <span className="h-px w-8 shrink-0 bg-pru-ink" />
+          )}
         </div>
       ))}
     </div>

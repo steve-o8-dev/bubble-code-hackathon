@@ -12,6 +12,13 @@ body,
   height: 100%;
 }
 
+/* Always reserve the scrollbar track, so short pages and long pages have the
+   same content width and nothing shifts when navigating between them. */
+html {
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+}
+
 body {
   margin: 0;
   background: #f6f7f9;

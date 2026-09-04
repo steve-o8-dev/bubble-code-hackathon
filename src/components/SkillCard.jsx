@@ -45,20 +45,7 @@ export default function SkillCard({ skill, accentTitle, live = false }) {
       </button>
 
       {open && (
-        <div className="card absolute right-0 top-full mt-2 z-50 w-[380px] max-w-[85vw] overflow-hidden text-left shadow-pop animate-fade-up">
-          <div className="flex items-center justify-between px-4 py-3 bg-pru-ink text-white">
-            <div className="flex items-center gap-2 font-mono text-xs">
-              <Icon name="doc" className="w-4 h-4 text-pru-red" />
-              {accentTitle}
-            </div>
-            {live ? (
-              <span className="flex items-center gap-1.5 text-[11px] font-semibold text-good">
-                <span className="w-1.5 h-1.5 rounded-full bg-good animate-pulse" /> loaded
-              </span>
-            ) : (
-              <span className="text-[11px] text-white/40">skill ruleset</span>
-            )}
-          </div>
+        <div className="card absolute left-full top-0 ml-2 z-50 w-[380px] max-w-[85vw] overflow-hidden text-left shadow-[0_12px_40px_rgba(21,23,28,0.28)] animate-fade-up">
           <div className="p-4 max-h-[60vh] overflow-y-auto">
             <p className="text-sm text-pru-ink font-semibold mb-3">{skill.purpose}</p>
             <ol className="space-y-2">
