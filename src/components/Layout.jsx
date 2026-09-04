@@ -65,15 +65,19 @@ export default function Layout({ children }) {
               MAS FEAT-Aligned
             </div>
             <p className="text-[11px] text-white/45 leading-snug">
-              Human-in-the-loop. Every recommendation is consultant-approved and audit-trailed.
+              Human-in-the-loop.
+              <br />
+              Every recommendation is consultant-approved and audit-trailed.
             </p>
           </div>
         </div>
       </aside>
 
       {/* Main */}
-      <div className="flex-1 min-w-0 flex flex-col bg-[#F0F2F5]">
-        <header className="sticky top-0 z-10 bg-white border-b border-pru-line">
+      <div className="flex-1 min-w-0 flex flex-col bg-[#EBEDF1]">
+        {/* Reads as a layer floating above the canvas rather than a drawn line:
+            a border one step darker than the canvas, plus a short drop shadow. */}
+        <header className="sticky top-0 z-10 bg-white border-b-[0.5px] border-[#D3D7DE] shadow-[0_2px_6px_-3px_rgba(21,23,28,0.20)]">
           <div className="px-8 h-16 flex items-center justify-between">
             <div className="flex items-center gap-2 text-sm text-pru-slate">
               <Icon name="cpu" className="w-4 h-4 text-pru-red" />

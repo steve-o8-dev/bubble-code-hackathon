@@ -97,8 +97,9 @@ export default function Discover() {
                 <span className="font-extrabold text-pru-ink truncate">{c.name}</span>
                 {selected === c.id && <Icon name="check" className="w-4 h-4 text-pru-red shrink-0" strokeWidth={3} />}
               </div>
-              <div className="text-xs text-pru-slate">{c.age} · {c.lifeStage}</div>
-              <div className="text-xs text-pru-slate truncate">{c.occupation}</div>
+              <div className="text-xs text-pru-slate truncate">
+                {c.age} · {c.lifeStage} · {c.occupation}
+              </div>
               <div className="mt-3 pt-3 border-t border-pru-line text-xs text-pru-slate">
                 {sgd(c.singpass.annualIncome)}/yr · {c.singpass.dependents} dep.
               </div>

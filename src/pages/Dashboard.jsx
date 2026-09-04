@@ -11,7 +11,7 @@ const agents = [
     icon: 'simplify',
     kicker: 'Policy Explainer',
     title: 'Simplify Agent',
-    desc: 'Reads a Prudential policy and returns an honest plain-English breakdown — what’s covered, what’s not, every exclusion flagged.',
+    desc: 'Turns a dense policy into plain English: what’s covered, what’s not, every exclusion flagged.',
     cta: 'Explain a policy',
   },
   {
@@ -19,7 +19,7 @@ const agents = [
     icon: 'discover',
     kicker: 'Needs Profiler',
     title: 'Discover Agent',
-    desc: 'Pulls verified client data via Singpass MCP, maps coverage gaps, and drafts the smart follow-up questions to ask.',
+    desc: 'Pulls verified Singpass data, maps coverage gaps, and drafts the questions to ask next.',
     cta: 'Profile a client',
   },
   {
@@ -27,7 +27,7 @@ const agents = [
     icon: 'recommend',
     kicker: 'Decision Aid',
     title: 'Recommend Agent',
-    desc: 'Produces a ranked, side-by-side product shortlist with reasons and tradeoffs — for the consultant to review and approve.',
+    desc: 'Builds a ranked, side-by-side shortlist with reasons and tradeoffs, for you to approve.',
     cta: 'Build a shortlist',
   },
 ]
@@ -40,7 +40,7 @@ export default function Dashboard() {
   const agentRuns = auditTrail.filter((a) => a.actor === 'AI Agent').length
 
   return (
-    <div className="space-y-7">
+    <div className="pt-2 space-y-7">
       {/* Hero */}
       <div className="relative overflow-hidden rounded-lg bg-pru-ink text-white p-7">
         <div className="absolute -right-16 -top-16 w-72 h-72 rounded-full bg-pru-red/25 blur-3xl" />
@@ -75,7 +75,7 @@ export default function Dashboard() {
 
       {/* Agent entry cards */}
       <div>
-        <SectionTitle kicker="The three agents" title="Pick an agent to start" icon="cpu" />
+        <SectionTitle title="Pick an agent to start" icon="cpu" />
         <div className="grid md:grid-cols-3 gap-4">
           {agents.map((a) => (
             <Link
