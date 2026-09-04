@@ -29,8 +29,8 @@ export default function Layout({ children }) {
   return (
     <div className="min-h-screen flex bg-pru-mist">
       {/* Sidebar */}
-      <aside className="w-[264px] shrink-0 bg-pru-ink h-screen sticky top-0 z-40 flex flex-col">
-        <div className="px-5 py-5 border-b border-white/10">
+      <aside className="w-[260px] shrink-0 bg-pru-ink h-screen sticky top-0 z-40 flex flex-col">
+        <div className="px-5 h-16 flex items-center border-b border-white/10">
           <Wordmark />
         </div>
 
@@ -72,13 +72,13 @@ export default function Layout({ children }) {
       </aside>
 
       {/* Main */}
-      <div className="flex-1 min-w-0 flex flex-col">
-        <header className="sticky top-0 z-10 bg-white/85 backdrop-blur border-b border-pru-line">
+      <div className="flex-1 min-w-0 flex flex-col bg-[#F0F2F5]">
+        <header className="sticky top-0 z-10 bg-white border-b border-pru-line">
           <div className="px-8 h-16 flex items-center justify-between">
             <div className="flex items-center gap-2 text-sm text-pru-slate">
               <Icon name="cpu" className="w-4 h-4 text-pru-red" />
-              <span className="font-semibold text-pru-ink">3-Engine Agentic Workspace</span>
-              <span className="text-pru-line">/</span>
+              <span className="font-semibold text-pru-ink">Agentic Workspace</span>
+              <span>/</span>
               <span className="capitalize">{loc.pathname === '/' ? 'Dashboard' : loc.pathname.slice(1)}</span>
             </div>
             <div className="flex items-center gap-4">
