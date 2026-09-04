@@ -1,5 +1,4 @@
-// Agent metadata, SKILLS.md content, and the animated run steps shown during
-// "Start Analysis". Steps are purely visual (with simulated latency).
+// Agent metadata and the SKILLS.md rulesets surfaced in SkillCard.
 
 export const consultant = {
   name: 'Jame',
@@ -48,35 +47,3 @@ export const skills = {
     ],
   },
 }
-
-// Generic step builders for the AgentRunner animation.
-export const simplifySteps = (policyName, policyId) => [
-  { key: 'skills', label: `Reading ${'simplify.SKILLS.md'} instructions`, detail: 'Loading policy-explainer skill ruleset' },
-  { key: 'mcp', label: 'Connecting to Policy MCP server', detail: 'mcp://prudential/policy-docs' },
-  { key: 'pull', label: `Pulling policy by ID — ${policyId}`, detail: `Fetching "${policyName}" document` },
-  { key: 'analyse', label: 'Analysing policy clauses', detail: 'Parsing coverage, exclusions & definitions' },
-  { key: 'simplify', label: 'Generating simplified plain-English text', detail: 'Rewriting at 8th-grade reading level' },
-  { key: 'confidence', label: 'Rating confidence score', detail: 'Cross-checking against source clauses' },
-  { key: 'done', label: 'Summary ready', detail: 'Plain-English breakdown compiled' },
-]
-
-export const discoverSteps = (clientName, nric) => [
-  { key: 'skills', label: 'Reading discover.SKILLS.md instructions', detail: 'Loading needs-discovery skill ruleset' },
-  { key: 'mcp', label: 'Connecting to Client MCP server', detail: 'mcp://prudential/client-singpass' },
-  { key: 'pull', label: `Pulling client data by NRIC — ${nric}`, detail: `Singpass Myinfo profile for ${clientName}` },
-  { key: 'analyse', label: 'Running holistic needs analysis', detail: 'Assessing all 10 protection & wealth pillars' },
-  { key: 'gaps', label: 'Generating coverage-gap summary', detail: 'Quantifying shortfalls' },
-  { key: 'questions', label: 'Generating follow-up questions', detail: 'Drafting questions for missing info' },
-  { key: 'confidence', label: 'Rating confidence score', detail: 'Validating against sourced fields' },
-  { key: 'done', label: 'Coverage data & questions ready', detail: 'Client needs profile compiled' },
-]
-
-export const recommendSteps = (clientName) => [
-  { key: 'skills', label: 'Reading recommend.SKILLS.md instructions', detail: 'Loading decision-aid skill ruleset' },
-  { key: 'mcp', label: 'Connecting to Product & Needs MCP', detail: 'mcp://prudential/product-catalogue' },
-  { key: 'profile', label: `Loading needs profile — ${clientName}`, detail: 'Importing Discover Agent output' },
-  { key: 'match', label: 'Matching products to client needs', detail: 'Scoring fit per pillar (not by payout)' },
-  { key: 'rank', label: 'Ranking & compiling tradeoffs', detail: 'Building side-by-side comparison' },
-  { key: 'confidence', label: 'Rating confidence & attaching sources', detail: 'Mapping to MAS FEAT guidelines' },
-  { key: 'done', label: 'Shortlist ready for consultant review', detail: 'Awaiting human approval' },
-]

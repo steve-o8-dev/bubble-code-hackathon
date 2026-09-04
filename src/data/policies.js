@@ -174,3 +174,103 @@ export const policies = [
 ]
 
 export const getPolicy = (id) => policies.find((p) => p.id === id)
+
+// ─── Uploaded documents ─────────────────────────────────────────────────────
+// The consultant can drop in their own policy PDF instead of picking from the
+// catalogue above. There is no parser here (presentation only), so the agent
+// output is resolved two ways:
+//   1. the filename is matched against the known catalogue — upload
+//      "PRUShield-Plus.pdf" and you get that policy's real breakdown;
+//   2. anything unrecognised falls back to `genericUploadAnalysis` below, at a
+//      deliberately lower confidence so the "flag for human review" rule in
+//      simplify.SKILLS.md visibly kicks in.
+
+// Keywords are matched against the lower-cased filename, most specific first.
+const filenameHints = [
+  { id: 'POL-PRUSHIELD-PLUS', keywords: ['prushield', 'shield', 'integrated', 'medisave', 'medishield'] },
+  { id: 'POL-PRUACTIVE-TERM', keywords: ['pruactive term', 'active term', 'term'] },
+  { id: 'POL-PRUWHOLE-LIFE', keywords: ['whole life', 'wholelife', 'whole-life'] },
+  { id: 'POL-PRUACTIVE-SAVER', keywords: ['saver', 'endowment', 'savings'] },
+  { id: 'POL-PRUVANTAGE-LEGACY', keywords: ['legacy', 'vantage', 'income'] },
+]
+
+export const matchPolicyByFilename = (filename = '') => {
+  const f = filename.toLowerCase()
+  const hit = filenameHints.find((h) => h.keywords.some((k) => f.includes(k)))
+  return hit ? getPolicy(hit.id) : null
+}
+
+// Fallback breakdown for a document the agent doesn't recognise.
+export const genericUploadAnalysis = {
+  category: 'Uploaded Document',
+  type: 'Insurance policy document',
+  tagline: 'Plain-English breakdown of your uploaded policy document',
+  premiumFrom: 'See schedule',
+  confidence: 84,
+  raw:
+    'Subject to the terms, conditions and exclusions of this Policy, the Company shall pay the benefits specified in the Policy Schedule upon the occurrence of an insured event during the Period of Insurance, provided that all premiums due have been paid and any applicable waiting period has elapsed; no benefit shall be payable in respect of any condition arising directly or indirectly from a Pre-existing Condition unless expressly declared and accepted in writing...',
+  covered: [
+    { item: 'Benefits listed in the Policy Schedule', detail: 'Payable on an insured event within the period of insurance' },
+    { item: 'Cover during the stated policy term', detail: 'Subject to premiums being paid up to date' },
+    { item: 'Standard claim process', detail: 'Documented notification and assessment procedure applies' },
+  ],
+  notCovered: [
+    { item: 'Anything outside the Policy Schedule', detail: 'Benefits not expressly listed are not payable' },
+    { item: 'Claims during the waiting period', detail: 'Events occurring before the waiting period ends' },
+  ],
+  exclusions: [
+    { item: 'Pre-existing conditions', detail: 'Excluded unless declared and accepted in writing before cover starts', severity: 'high' },
+    { item: 'Waiting period before benefits start', detail: 'Confirm the exact duration in the Policy Schedule', severity: 'medium' },
+    { item: 'Lapse on non-payment of premium', detail: 'Cover ceases if premiums are not paid within the grace period', severity: 'medium' },
+  ],
+  keyTerms: [
+    { term: 'Policy Schedule', meaning: 'The page listing exactly what you are covered for and for how much.' },
+    { term: 'Period of Insurance', meaning: 'The dates between which the cover actually applies.' },
+    { term: 'Waiting period', meaning: 'Time after the start date before you can claim.' },
+    { term: 'Pre-existing condition', meaning: 'Something you already had before the cover began.' },
+  ],
+}
+
+const fileSize = (bytes) => {
+  if (!bytes && bytes !== 0) return ''
+  return bytes < 1024 * 1024
+    ? `${Math.max(1, Math.round(bytes / 1024))} KB`
+    : `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+}
+
+// Builds a policy-shaped record from an uploaded file so the result view can
+// render it exactly like a catalogue policy.
+export const buildUploadedPolicy = (file) => {
+  const matched = matchPolicyByFilename(file.name)
+  const base = matched || genericUploadAnalysis
+  return {
+    ...base,
+    id: 'POL-UPLOAD',
+    uploaded: true,
+    matchedId: matched ? matched.id : null,
+    recognisedAs: matched ? matched.name : null,
+    name: file.name.replace(/\.pdf$/i, ''),
+    docRef: file.name,
+    pages: null,
+    metaLabel: `Uploaded · ${fileSize(file.size)} · just now`,
+  }
+}
+
+// Rebuilds a full policy record from a stored history entry. Uploaded File
+// objects can't be persisted, so history keeps only the resolved identity
+// (which catalogue policy it matched, if any) and we reconstruct from that.
+export const policyFromHistory = (entry) => {
+  if (entry.source === 'catalogue') return getPolicy(entry.policyId)
+  const matched = entry.matchedId ? getPolicy(entry.matchedId) : null
+  return {
+    ...(matched || genericUploadAnalysis),
+    id: 'POL-UPLOAD',
+    uploaded: true,
+    matchedId: entry.matchedId || null,
+    recognisedAs: matched ? matched.name : null,
+    name: entry.name,
+    docRef: entry.docRef,
+    pages: null,
+    metaLabel: entry.metaLabel,
+  }
+}

@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import Icon from '../components/Icon.jsx'
-import AgentRunner from '../components/AgentRunner.jsx'
+import LoadingOverlay from '../components/LoadingOverlay.jsx'
 import SkillCard from '../components/SkillCard.jsx'
 import { Badge, ConfidenceMeter, ConfidenceBar, SectionTitle, SourceChip } from '../components/ui.jsx'
 import { clients, getClient } from '../data/clients.js'
 import { getProduct } from '../data/products.js'
 import { getAnalysis } from '../data/analysis.js'
-import { skills, recommendSteps, consultant } from '../data/agents.js'
+import { skills, consultant } from '../data/agents.js'
 
 const money = (n) => (n === 0 ? '—' : 'S$' + n.toLocaleString('en-SG') + '/mo')
 
@@ -64,49 +64,50 @@ export default function Recommend() {
         {header}
         <FlowSteps phase={phase} approved={approved} />
 
-        {phase === 'select' ? (
-          <div>
-            <SectionTitle
-              kicker="Step 1"
-              title="Select a client (with a completed needs profile)"
-              icon="user"
-              right={
-                <button disabled={!selected} onClick={() => setPhase('running')} className="btn-primary shrink-0">
-                  <Icon name="bolt" className="w-4 h-4" /> Generate shortlist
-                </button>
-              }
-            />
-            <div className="space-y-3">
-              {clients.map((c) => (
-                <button
-                  key={c.id}
-                  onClick={() => setSelected(c.id)}
-                  className={`card w-full p-4 text-left flex items-center gap-4 transition-all hover:-translate-y-0.5 ${
-                    selected === c.id ? 'ring-2 ring-pru-red border-pru-red' : 'hover:shadow-pop'
-                  }`}
-                >
-                  <div className={`w-12 h-12 rounded-full ${c.avatarTone} text-white flex items-center justify-center font-bold shrink-0`}>
-                    {c.name.split(' ').map((w) => w[0]).slice(0, 2).join('')}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="font-extrabold text-pru-ink">{c.name}</div>
-                    <div className="text-xs text-pru-slate">{c.lifeStage} · top need: {getAnalysis(c.id)?.discover.needsProfile.topNeed}</div>
-                  </div>
-                  <Badge tone="good" icon="check">Profile ready</Badge>
-                  {selected === c.id && <Icon name="check" className="w-5 h-5 text-pru-red shrink-0" strokeWidth={3} />}
-                </button>
-              ))}
-            </div>
+        <div>
+          <SectionTitle
+            kicker="Step 1"
+            title="Select a client (with a completed needs profile)"
+            icon="user"
+            right={
+              <button disabled={!selected} onClick={() => setPhase('running')} className="btn-primary shrink-0">
+                <Icon name="bolt" className="w-4 h-4" /> Generate shortlist
+              </button>
+            }
+          />
+          <div className="space-y-3">
+            {clients.map((c) => (
+              <button
+                key={c.id}
+                onClick={() => setSelected(c.id)}
+                className={`card w-full p-4 text-left flex items-center gap-4 transition-all hover:-translate-y-0.5 ${
+                  selected === c.id ? 'ring-2 ring-pru-red border-pru-red' : 'hover:shadow-pop'
+                }`}
+              >
+                <div className={`w-12 h-12 rounded-full ${c.avatarTone} text-white flex items-center justify-center font-bold shrink-0`}>
+                  {c.name.split(' ').map((w) => w[0]).slice(0, 2).join('')}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-extrabold text-pru-ink">{c.name}</div>
+                  <div className="text-xs text-pru-slate">{c.lifeStage} · top need: {getAnalysis(c.id)?.discover.needsProfile.topNeed}</div>
+                </div>
+                <Badge tone="good" icon="check">Profile ready</Badge>
+                {selected === c.id && <Icon name="check" className="w-5 h-5 text-pru-red shrink-0" strokeWidth={3} />}
+              </button>
+            ))}
           </div>
-        ) : (
-          <div>
-            <SectionTitle kicker="Step 2" title={`Matching products for ${client.name}`} icon="cpu" />
-            <AgentRunner steps={recommendSteps(client.name)} accent="#ED1B2E" onDone={() => setPhase('result')} />
-          </div>
-        )}
+        </div>
       </div>
 
       <SkillCard skill={skills.recommend} accentTitle="recommend.SKILLS.md" live={phase === 'running'} />
+
+      {phase === 'running' && (
+        <LoadingOverlay
+          label="Recommend Agent"
+          sublabel={`Matching products for ${client.name}…`}
+          onDone={() => setPhase('result')}
+        />
+      )}
     </div>
   )
 }

@@ -39,7 +39,7 @@ ID → analyse → produce output + confidence score*.
 
 | Agent | Role | Page | Input | Output |
 |-------|------|------|-------|--------|
-| **Simplify** | Policy Explainer | `/simplify` | a policy | plain-English Covered / Not covered / Exclusions / Key terms + confidence |
+| **Simplify** | Policy Explainer | `/simplify` | a policy **or an uploaded PDF** | plain-English Covered / Not covered / Exclusions / Key terms + confidence |
 | **Discover** | Needs Profiler | `/discover` | a client (Singpass NRIC) | Singpass profile, holistic 10-pillar coverage map, gaps, follow-up questions |
 | **Recommend** | Decision Aid | `/recommend` | a client w/ needs profile | ranked side-by-side product shortlist → **consultant approval gate** |
 
@@ -57,13 +57,13 @@ src/
   index.css            # Tailwind + @layer component classes (.card, .btn-primary, .chip, .label-kicker ...)
   components/
     Layout.jsx         # sidebar nav + top header (consultant identity, "Agents online" status) + footer
-    AgentRunner.jsx    # the simulated "agent runtime" console animation (see below)
+    LoadingOverlay.jsx # full-screen dimmed loading state during an agent run (see below)
     SkillCard.jsx      # renders an agent's SKILLS.md ruleset panel
     Icon.jsx           # inline-SVG icon set, no icon dependency. Add new icons to the `paths` map
     ui.jsx             # shared primitives: Badge, SeverityTag, ConfidenceMeter, ConfidenceBar, SourceChip, SectionTitle, Stat
   pages/
     Dashboard.jsx      # hero, KPIs, agent entry cards, recent clients/policies, recent activity
-    Simplify.jsx       # 3-phase: select → running → result
+    Simplify.jsx       # 3-phase + 3 source tabs (catalogue / upload / history)
     Discover.jsx       # 3-phase: select → running → result (incl. HolisticMap)
     Recommend.jsx      # 3-phase + approval gate
     AuditTrail.jsx     # FEAT principles + audit log table
@@ -86,10 +86,14 @@ public/pru-favicon.svg
   - `analysisByClient[clientId].recommend` — ranked `shortlist` (by `needsFitScore`, never payout)
   - `coverageMapByClient` + `pillars` + `statusMeta` — the holistic 10-pillar FNA map
   - helpers: `getAnalysis(id)`, `getCoverageMap(id)`
-- **`agents.js`** — agent metadata, the `skills` ruleset objects shown in SkillCard, the
-  `consultant` identity (Jame), and the **step builders** (`simplifySteps`, `discoverSteps`,
-  `recommendSteps`) that drive the AgentRunner animation.
+- **`agents.js`** — agent metadata, the `skills` ruleset objects shown in SkillCard, and the
+  `consultant` identity (Jame).
 - **`governance.js`** — `featPrinciples` (F/E/A/T) and the `auditTrail` log rows.
+- **`history.js`** — recent **Simplify** runs only, persisted to `localStorage` (the router
+  remounts pages on every navigation, so in-memory history would not survive). Seeded with
+  3 fake past runs so the History tab is never empty in a demo. Uploaded `File` objects
+  can't be serialised, so an entry stores the resolved identity and
+  `policyFromHistory()` in `policies.js` rebuilds the full record.
 
 **Data is wired by ID.** Client IDs, policy IDs, product IDs, and `productId` references in
 the shortlists must stay consistent across files or lookups return `undefined` and the page
@@ -98,12 +102,16 @@ and a `coverageMapByClient` entry, or guard the access.
 
 ## How the agent simulation works
 
-`AgentRunner` ([src/components/AgentRunner.jsx](src/components/AgentRunner.jsx)) takes a
-`steps` array, advances one step every `stepMs` (default 900ms) with a spinner→check, then
-calls `onDone`. Each page is a small state machine on `phase`: `select → running → result`.
-The `running` phase mounts `AgentRunner`; its `onDone` flips `phase` to `result`. To change
-what the "agent" appears to do, edit the step builders in `agents.js`. To change pacing,
-adjust `stepMs`.
+Each page is a small state machine on `phase`: `select → running → result`. The selection
+UI stays mounted through `running`; the `running` phase additionally mounts
+`LoadingOverlay` ([src/components/LoadingOverlay.jsx](src/components/LoadingOverlay.jsx)),
+which dims the whole viewport and centres a spinner, then calls `onDone` to flip `phase` to
+`result`.
+
+The overlay eases in over 500ms, holds for `durationMs` (default 2500), then eases out over
+200ms before `onDone` fires. To change pacing, pass `durationMs`. Note the fade-in is
+triggered by a 20ms `setTimeout` rather than `requestAnimationFrame` — rAF does not fire on
+a tab that isn't painting, which would leave the overlay stuck invisible.
 
 ## Styling conventions
 

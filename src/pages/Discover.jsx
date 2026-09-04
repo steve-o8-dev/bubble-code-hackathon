@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Icon from '../components/Icon.jsx'
-import AgentRunner from '../components/AgentRunner.jsx'
+import LoadingOverlay from '../components/LoadingOverlay.jsx'
 import SkillCard from '../components/SkillCard.jsx'
 import { Badge, ConfidenceMeter, SectionTitle, SeverityTag, SourceChip } from '../components/ui.jsx'
 import { clients, getClient } from '../data/clients.js'
 import { getAnalysis, getCoverageMap, pillars, statusMeta } from '../data/analysis.js'
-import { skills, discoverSteps } from '../data/agents.js'
+import { skills } from '../data/agents.js'
 
 const sgd = (n) => 'S$' + n.toLocaleString('en-SG')
 
@@ -62,52 +62,53 @@ export default function Discover() {
         {header}
         <FlowSteps phase={phase} />
 
-        {phase === 'select' ? (
-          <div>
-            <SectionTitle
-              kicker="Step 1"
-              title="Select a client"
-              icon="user"
-              right={
-                <button disabled={!selected} onClick={() => setPhase('running')} className="btn-primary">
-                  <Icon name="bolt" className="w-4 h-4" /> Start analysis
-                </button>
-              }
-            />
-            <div className="space-y-3">
-              {clients.map((c) => (
-                <button
-                  key={c.id}
-                  onClick={() => setSelected(c.id)}
-                  className={`card w-full p-4 text-left flex items-center gap-4 transition-all hover:-translate-y-0.5 ${
-                    selected === c.id ? 'ring-2 ring-pru-red border-pru-red' : 'hover:shadow-pop'
-                  }`}
-                >
-                  <div className={`w-12 h-12 rounded-full ${c.avatarTone} text-white flex items-center justify-center font-bold shrink-0`}>
-                    {c.name.split(' ').map((w) => w[0]).slice(0, 2).join('')}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="font-extrabold text-pru-ink">{c.name}</div>
-                    <div className="text-xs text-pru-slate">{c.age} · {c.lifeStage} · {c.occupation}</div>
-                  </div>
-                  <div className="hidden sm:block text-right">
-                    <div className="text-xs font-mono text-pru-slate">{c.nric}</div>
-                    <div className="text-xs text-pru-slate">{sgd(c.singpass.annualIncome)}/yr · {c.singpass.dependents} dep.</div>
-                  </div>
-                  {selected === c.id && <Icon name="check" className="w-5 h-5 text-pru-red shrink-0" strokeWidth={3} />}
-                </button>
-              ))}
-            </div>
+        <div>
+          <SectionTitle
+            kicker="Step 1"
+            title="Select a client"
+            icon="user"
+            right={
+              <button disabled={!selected} onClick={() => setPhase('running')} className="btn-primary">
+                <Icon name="bolt" className="w-4 h-4" /> Start analysis
+              </button>
+            }
+          />
+          <div className="space-y-3">
+            {clients.map((c) => (
+              <button
+                key={c.id}
+                onClick={() => setSelected(c.id)}
+                className={`card w-full p-4 text-left flex items-center gap-4 transition-all hover:-translate-y-0.5 ${
+                  selected === c.id ? 'ring-2 ring-pru-red border-pru-red' : 'hover:shadow-pop'
+                }`}
+              >
+                <div className={`w-12 h-12 rounded-full ${c.avatarTone} text-white flex items-center justify-center font-bold shrink-0`}>
+                  {c.name.split(' ').map((w) => w[0]).slice(0, 2).join('')}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-extrabold text-pru-ink">{c.name}</div>
+                  <div className="text-xs text-pru-slate">{c.age} · {c.lifeStage} · {c.occupation}</div>
+                </div>
+                <div className="hidden sm:block text-right">
+                  <div className="text-xs font-mono text-pru-slate">{c.nric}</div>
+                  <div className="text-xs text-pru-slate">{sgd(c.singpass.annualIncome)}/yr · {c.singpass.dependents} dep.</div>
+                </div>
+                {selected === c.id && <Icon name="check" className="w-5 h-5 text-pru-red shrink-0" strokeWidth={3} />}
+              </button>
+            ))}
           </div>
-        ) : (
-          <div>
-            <SectionTitle kicker="Step 2" title={`Profiling ${client.name}`} icon="cpu" />
-            <AgentRunner steps={discoverSteps(client.name, client.nric)} onDone={() => setPhase('result')} />
-          </div>
-        )}
+        </div>
       </div>
 
       <SkillCard skill={skills.discover} accentTitle="discover.SKILLS.md" live={phase === 'running'} />
+
+      {phase === 'running' && (
+        <LoadingOverlay
+          label="Discover Agent"
+          sublabel={`Profiling ${client.name}…`}
+          onDone={() => setPhase('result')}
+        />
+      )}
     </div>
   )
 }

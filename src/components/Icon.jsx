@@ -25,6 +25,8 @@ const paths = {
   clock: <><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></>,
   cpu: <><rect x="6" y="6" width="12" height="12" rx="2" /><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3" /></>,
   bolt: <path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z" />,
+  upload: <><path d="M12 16V4" /><path d="m7 9 5-5 5 5" /><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" /></>,
+  history: <><path d="M3 12a9 9 0 1 0 3-6.7L3 8" /><path d="M3 3v5h5" /><path d="M12 7.5V12l3 2" /></>,
 }
 
 export default function Icon({ name, className = 'w-5 h-5', strokeWidth = 1.8, ...rest }) {
