@@ -34,17 +34,19 @@ export default function Recommend() {
     <div className="flex items-start justify-between flex-wrap gap-4">
       <div>
         <Badge tone="red" icon="recommend">Recommend Agent · Decision Aid</Badge>
-        <h1 className="mt-2 text-2xl font-extrabold text-pru-ink">Ranked product shortlist — compared</h1>
-        <p className="text-pru-slate mt-1 max-w-2xl">
-          A side-by-side shortlist ranked on what the client actually needs — never on what pays the most. Each option
-          shows plain reasons, tradeoffs, sources and a confidence score for you to review and approve.
+        <h1 className="mt-1 text-[22px] font-extrabold text-pru-ink">Ranked product shortlist — compared</h1>
+        <p className="text-sm text-pru-slate mt-1 max-w-4xl">
+          A shortlist ranked on what the client needs — never on what pays the most, with reasons, tradeoffs and sources.
         </p>
       </div>
-      {phase !== 'select' && (
-        <button onClick={reset} className="btn-ghost">
-          <Icon name="arrow" className="w-4 h-4 rotate-180" /> New shortlist
-        </button>
-      )}
+      <div className="flex items-center gap-3">
+        {phase !== 'select' && (
+          <button onClick={reset} className="btn-ghost">
+            <Icon name="arrow" className="w-4 h-4 rotate-180" /> New shortlist
+          </button>
+        )}
+        <SkillCard skill={skills.recommend} accentTitle="recommend.SKILLS.md" live={phase === 'running'} />
+      </div>
     </div>
   )
 
@@ -59,47 +61,43 @@ export default function Recommend() {
   }
 
   return (
-    <div className="grid lg:grid-cols-3 gap-5 items-start">
-      <div className="lg:col-span-2 space-y-6">
-        {header}
-        <FlowSteps phase={phase} approved={approved} />
+    <div className="space-y-6">
+      {header}
+      <FlowSteps phase={phase} approved={approved} />
 
-        <div>
-          <SectionTitle
-            kicker="Step 1"
-            title="Select a client (with a completed needs profile)"
-            icon="user"
-            right={
-              <button disabled={!selected} onClick={() => setPhase('running')} className="btn-primary shrink-0">
-                <Icon name="bolt" className="w-4 h-4" /> Generate shortlist
-              </button>
-            }
-          />
-          <div className="space-y-3">
-            {clients.map((c) => (
-              <button
-                key={c.id}
-                onClick={() => setSelected(c.id)}
-                className={`card w-full p-4 text-left flex items-center gap-4 transition-all hover:-translate-y-0.5 ${
-                  selected === c.id ? 'ring-2 ring-pru-red border-pru-red' : 'hover:shadow-pop'
-                }`}
-              >
-                <div className={`w-12 h-12 rounded-full ${c.avatarTone} text-white flex items-center justify-center font-bold shrink-0`}>
-                  {c.name.split(' ').map((w) => w[0]).slice(0, 2).join('')}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="font-extrabold text-pru-ink">{c.name}</div>
-                  <div className="text-xs text-pru-slate">{c.lifeStage} · top need: {getAnalysis(c.id)?.discover.needsProfile.topNeed}</div>
-                </div>
-                <Badge tone="good" icon="check">Profile ready</Badge>
-                {selected === c.id && <Icon name="check" className="w-5 h-5 text-pru-red shrink-0" strokeWidth={3} />}
-              </button>
-            ))}
-          </div>
+      <div className="card p-5">
+        <SectionTitle
+          kicker="Step 1"
+          title="Select a client (with a completed needs profile)"
+          icon="user"
+          right={
+            <button disabled={!selected} onClick={() => setPhase('running')} className="btn-primary shrink-0">
+              <Icon name="bolt" className="w-4 h-4" /> Generate shortlist
+            </button>
+          }
+        />
+        <div className="space-y-3">
+          {clients.map((c) => (
+            <button
+              key={c.id}
+              onClick={() => setSelected(c.id)}
+              className={`card w-full p-4 text-left flex items-center gap-4 transition-all hover:-translate-y-0.5 ${
+                selected === c.id ? 'ring-2 ring-pru-red border-pru-red' : 'hover:shadow-pop'
+              }`}
+            >
+              <div className={`w-12 h-12 rounded-full ${c.avatarTone} text-white flex items-center justify-center font-bold shrink-0`}>
+                {c.name.split(' ').map((w) => w[0]).slice(0, 2).join('')}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="font-extrabold text-pru-ink">{c.name}</div>
+                <div className="text-xs text-pru-slate">{c.lifeStage} · top need: {getAnalysis(c.id)?.discover.needsProfile.topNeed}</div>
+              </div>
+              <Badge tone="good" icon="check">Profile ready</Badge>
+              {selected === c.id && <Icon name="check" className="w-5 h-5 text-pru-red shrink-0" strokeWidth={3} />}
+            </button>
+          ))}
         </div>
       </div>
-
-      <SkillCard skill={skills.recommend} accentTitle="recommend.SKILLS.md" live={phase === 'running'} />
 
       {phase === 'running' && (
         <LoadingOverlay
@@ -162,14 +160,14 @@ function Result({ client, rec, approved, onApprove }) {
               <div key={it.productId} className={`card p-5 flex flex-col ${it.rank === 1 ? 'ring-2 ring-pru-red' : ''}`}>
                 <div className="flex items-center justify-between">
                   <Badge tone={it.rank === 1 ? 'red' : 'slate'}>#{it.rank} {it.rank === 1 ? 'Best fit' : 'Alternative'}</Badge>
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${it.rank === 1 ? 'bg-pru-red text-white' : 'bg-bad-soft text-pru-red'}`}>
+                  <div className={`w-10 h-10 rounded-md flex items-center justify-center ${it.rank === 1 ? 'bg-pru-red text-white' : 'bg-bad-soft text-pru-red'}`}>
                     <Icon name={p.icon} className="w-5 h-5" />
                   </div>
                 </div>
                 <h3 className="mt-3 font-extrabold text-pru-ink leading-tight">{p.name}</h3>
                 <div className="text-xs text-pru-slate">{p.type}</div>
 
-                <div className="mt-3 rounded-xl bg-pru-mist border border-pru-line p-3 space-y-2">
+                <div className="mt-3 rounded-md bg-pru-mist border border-pru-line p-3 space-y-2">
                   <Row label="Needs-fit" value={`${it.needsFitScore}/100`} bold />
                   <Row label="Coverage" value={it.coverageFor} />
                   <Row label="Est. premium" value={it.singlePremium || money(it.monthly)} />

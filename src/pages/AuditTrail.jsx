@@ -68,7 +68,7 @@ export default function AuditTrail() {
               setPageSize(Number(e.target.value))
               setPage(1)
             }}
-            className="rounded-lg border border-pru-line bg-white px-2.5 py-1.5 text-sm font-bold text-pru-ink focus:outline-none focus:ring-2 focus:ring-pru-red"
+            className="rounded border border-pru-line bg-white px-2.5 py-1.5 text-sm font-bold text-pru-ink focus:outline-none focus:ring-2 focus:ring-pru-red"
           >
             {PAGE_SIZES.map((n) => (
               <option key={n} value={n}>{n}</option>
@@ -83,10 +83,9 @@ export default function AuditTrail() {
     <div className="space-y-6">
       <div>
         <Badge tone="red" icon="lock">Governance</Badge>
-        <h1 className="mt-2 text-2xl font-extrabold text-pru-ink">Audit trail & MAS FEAT alignment</h1>
-        <p className="text-pru-slate mt-1 max-w-2xl">
-          Every agent action and consultant decision is recorded with sources and confidence. The platform maps to MAS’s
-          FEAT principles for responsible AI in financial services.
+        <h1 className="mt-1 text-[22px] font-extrabold text-pru-ink">Audit trail & MAS FEAT alignment</h1>
+        <p className="text-sm text-pru-slate mt-1 max-w-4xl">
+          Every agent action and consultant decision is logged with sources, confidence and its MAS FEAT mapping.
         </p>
       </div>
 
@@ -104,7 +103,7 @@ export default function AuditTrail() {
           {featPrinciples.map((f) => (
             <div key={f.key} className="card p-5">
               <div className="flex items-center gap-3">
-                <div className={`w-11 h-11 rounded-xl flex items-center justify-center text-white font-extrabold text-lg bg-${f.color}`}>
+                <div className={`w-11 h-11 rounded-md flex items-center justify-center text-white font-extrabold text-lg bg-${f.color}`}>
                   {f.key}
                 </div>
                 <div className="font-extrabold text-pru-ink">{f.name}</div>
@@ -162,7 +161,7 @@ export default function AuditTrail() {
                 <td className="py-3">
                   <div className="flex gap-1">
                     {a.feat.map((k) => (
-                      <span key={k} className={`w-6 h-6 rounded-md text-white text-xs font-bold flex items-center justify-center bg-${featColor[k]}`}>{k}</span>
+                      <span key={k} className={`w-6 h-6 rounded-sm text-white text-xs font-bold flex items-center justify-center bg-${featColor[k]}`}>{k}</span>
                     ))}
                   </div>
                 </td>

@@ -13,7 +13,7 @@ const nav = [
 function Wordmark() {
   return (
     <div className="flex items-center gap-2.5">
-      <div className="w-9 h-9 rounded-xl bg-pru-red flex items-center justify-center text-white font-extrabold text-lg shadow-sm">
+      <div className="w-9 h-9 rounded-md bg-pru-red flex items-center justify-center text-white font-extrabold text-lg shadow-sm">
         P
       </div>
       <div className="leading-tight">
@@ -41,7 +41,7 @@ export default function Layout({ children }) {
               to={n.to}
               end={n.end}
               className={({ isActive }) =>
-                `group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors ${
+                `group relative flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-semibold transition-colors ${
                   isActive ? 'bg-pru-red text-white shadow-sm' : 'text-white/65 hover:text-white hover:bg-white/5'
                 }`
               }
@@ -49,7 +49,7 @@ export default function Layout({ children }) {
               <Icon name={n.icon} className="w-5 h-5 shrink-0" />
               <span className="flex-1">{n.label}</span>
               {n.tag && (
-                <span className="pointer-events-none absolute left-full top-1/2 z-[100] ml-3 -translate-y-1/2 whitespace-nowrap rounded-lg bg-pru-ink-soft px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wide text-white opacity-0 shadow-pop ring-1 ring-white/10 transition-opacity duration-150 group-hover:opacity-100">
+                <span className="pointer-events-none absolute left-full top-1/2 z-[100] ml-3 -translate-y-1/2 whitespace-nowrap rounded bg-pru-ink-soft px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wide text-white opacity-0 shadow-pop ring-1 ring-white/10 transition-opacity duration-150 group-hover:opacity-100">
                   {n.tag}
                   <span className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-pru-ink-soft" />
                 </span>
@@ -59,7 +59,7 @@ export default function Layout({ children }) {
         </nav>
 
         <div className="p-3">
-          <div className="rounded-xl bg-white/5 border border-white/10 p-3">
+          <div className="rounded-md bg-white/5 border border-white/10 p-3">
             <div className="flex items-center gap-1.5 text-[11px] font-bold text-good mb-1.5">
               <Icon name="lock" className="w-3.5 h-3.5" />
               MAS FEAT-Aligned
@@ -95,7 +95,7 @@ export default function Layout({ children }) {
           </div>
         </header>
 
-        <main className="flex-1 px-8 py-7 max-w-[1280px] w-full mx-auto">{children}</main>
+        <main className="flex-1 px-8 pt-5 pb-7 max-w-[1280px] w-full mx-auto">{children}</main>
 
         <footer className="px-8 py-4 text-center text-[11px] text-pru-slate border-t border-pru-line">
           PRU.NAVIGATOR — Hackathon concept prototype · “AI prepares. The consultant decides. The customer wins.”

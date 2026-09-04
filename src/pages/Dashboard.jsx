@@ -37,7 +37,7 @@ export default function Dashboard() {
   return (
     <div className="space-y-7">
       {/* Hero */}
-      <div className="relative overflow-hidden rounded-2xl bg-pru-ink text-white p-7">
+      <div className="relative overflow-hidden rounded-lg bg-pru-ink text-white p-7">
         <div className="absolute -right-16 -top-16 w-72 h-72 rounded-full bg-pru-red/25 blur-3xl" />
         <div className="absolute right-24 bottom-0 w-48 h-48 rounded-full bg-pru-red/10 blur-2xl" />
         <div className="relative">
@@ -78,7 +78,7 @@ export default function Dashboard() {
               to={a.to}
               className="card p-5 group hover:shadow-pop hover:-translate-y-0.5 transition-all"
             >
-              <div className="w-11 h-11 rounded-xl bg-bad-soft text-pru-red flex items-center justify-center group-hover:bg-pru-red group-hover:text-white transition-colors">
+              <div className="w-11 h-11 rounded-md bg-bad-soft text-pru-red flex items-center justify-center group-hover:bg-pru-red group-hover:text-white transition-colors">
                 <Icon name={a.icon} className="w-6 h-6" />
               </div>
               <div className="label-kicker mt-4">{a.kicker}</div>
@@ -106,7 +106,7 @@ export default function Dashboard() {
               <button
                 key={c.id}
                 onClick={() => navigate('/discover', { state: { clientId: c.id } })}
-                className="w-full flex items-center gap-3 py-3 text-left hover:bg-pru-mist rounded-lg px-2 -mx-2 transition-colors"
+                className="w-full flex items-center gap-3 py-3 text-left hover:bg-pru-mist rounded px-2 -mx-2 transition-colors"
               >
                 <div className={`w-10 h-10 rounded-full ${c.avatarTone} text-white flex items-center justify-center text-sm font-bold shrink-0`}>
                   {c.name.split(' ').map((w) => w[0]).slice(0, 2).join('')}
@@ -138,7 +138,7 @@ export default function Dashboard() {
               <button
                 key={p.id}
                 onClick={() => navigate('/simplify', { state: { policyId: p.id } })}
-                className="w-full text-left p-3 rounded-xl border border-pru-line hover:border-pru-red hover:bg-bad-soft/40 transition-colors"
+                className="w-full text-left p-3 rounded-md border border-pru-line hover:border-pru-red hover:bg-bad-soft/40 transition-colors"
               >
                 <div className="flex items-center justify-between">
                   <div className="font-bold text-pru-ink text-sm">{p.name}</div>

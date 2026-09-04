@@ -4,7 +4,7 @@ import Icon from './Icon.jsx'
 export function Badge({ tone = 'slate', children, icon }) {
   const tones = {
     slate: 'bg-pru-mist text-pru-slate border border-pru-line',
-    red: 'bg-bad-soft text-bad',
+    red: 'bg-bad-soft text-bad border border-bad',
     good: 'bg-good-soft text-good',
     warn: 'bg-warn-soft text-warn',
     info: 'bg-info-soft text-info',
@@ -85,7 +85,7 @@ export function ConfidenceBar({ score, className = '' }) {
 
 export function SourceChip({ children }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-md bg-pru-mist border border-pru-line px-2 py-1 text-[11px] font-medium text-pru-slate font-mono">
+    <span className="inline-flex items-center gap-1.5 rounded-sm bg-pru-mist border border-pru-line px-2 py-1 text-[11px] font-medium text-pru-slate font-mono">
       <Icon name="doc" className="w-3 h-3" />
       {children}
     </span>

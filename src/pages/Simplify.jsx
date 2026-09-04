@@ -52,17 +52,19 @@ export default function Simplify() {
     <div className="flex items-start justify-between flex-wrap gap-4">
       <div>
         <Badge tone="red" icon="simplify">Simplify Agent · Policy Explainer</Badge>
-        <h1 className="mt-2 text-2xl font-extrabold text-pru-ink">Plain-English policy breakdown</h1>
-        <p className="text-pru-slate mt-1 max-w-2xl">
-          Pick a Prudential policy or upload your own PDF, start the analysis, and the agent reads the document and
-          returns an honest summary — coverage, exclusions and jargon explained.
+        <h1 className="mt-1 text-[22px] font-extrabold text-pru-ink">Plain-English policy breakdown</h1>
+        <p className="text-sm text-pru-slate mt-1 max-w-4xl">
+          Pick a Prudential policy or upload any insurer’s PDF — the agent returns an honest plain-English breakdown.
         </p>
       </div>
-      {phase !== 'select' && (
-        <button onClick={reset} className="btn-ghost">
-          <Icon name="arrow" className="w-4 h-4 rotate-180" /> New analysis
-        </button>
-      )}
+      <div className="flex items-center gap-3">
+        {phase !== 'select' && (
+          <button onClick={reset} className="btn-ghost">
+            <Icon name="arrow" className="w-4 h-4 rotate-180" /> New analysis
+          </button>
+        )}
+        <SkillCard skill={skills.simplify} accentTitle="simplify.SKILLS.md" live={phase === 'running'} />
+      </div>
     </div>
   )
 
@@ -77,86 +79,82 @@ export default function Simplify() {
   }
 
   return (
-    <div className="grid lg:grid-cols-3 gap-5 items-start">
-      <div className="lg:col-span-2 space-y-6">
-        {header}
-        <FlowSteps phase={phase} source={tab === 'upload' ? 'upload' : 'catalogue'} />
+    <div className="space-y-6">
+      {header}
+      <FlowSteps phase={phase} source={tab === 'upload' ? 'upload' : 'catalogue'} />
 
-        <div>
-          <SectionTitle
-            kicker="Step 1"
-            title="Choose a document"
-            icon="doc"
-            right={
-              tab !== 'history' && (
-                <button disabled={!active} onClick={start} className="btn-primary">
-                  {tab === 'upload' ? (
-                    <>
-                      <Icon name="bolt" className="w-4 h-4" /> Analyse document
-                    </>
-                  ) : (
-                    <>
-                      <Icon name="doc" className="w-4 h-4" /> View breakdown
-                    </>
-                  )}
+      <div className="card p-5">
+        <SectionTitle
+          kicker="Step 1"
+          title="Choose a document"
+          icon="doc"
+          right={
+            tab !== 'history' && (
+              <button disabled={!active} onClick={start} className="btn-primary">
+                {tab === 'upload' ? (
+                  <>
+                    <Icon name="bolt" className="w-4 h-4" /> Analyse document
+                  </>
+                ) : (
+                  <>
+                    <Icon name="doc" className="w-4 h-4" /> View breakdown
+                  </>
+                )}
+              </button>
+            )
+          }
+        />
+        <SourceTabs
+          tab={tab}
+          onChange={setTab}
+          catalogueCount={policies.length}
+          uploadName={upload?.name}
+          historyCount={history.length}
+        />
+
+        {tab === 'catalogue' && (
+          <div className="animate-fade-up">
+            <p className="mb-3 flex items-center gap-1.5 text-xs text-pru-slate">
+              <Icon name="lock" className="w-3.5 h-3.5 text-good shrink-0" />
+              Prudential’s own policies ship with an approved plain-English breakdown — no AI generation needed.
+            </p>
+            <div className="grid sm:grid-cols-2 gap-3">
+              {policies.map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => setSelected(p.id)}
+                  className={`card p-4 text-left transition-all hover:-translate-y-0.5 ${
+                    selected === p.id ? 'ring-2 ring-pru-red border-pru-red' : 'hover:shadow-pop'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <Badge tone="slate">{p.category}</Badge>
+                    {selected === p.id && <Icon name="check" className="w-5 h-5 text-pru-red" strokeWidth={3} />}
+                  </div>
+                  <h3 className="mt-2 font-extrabold text-pru-ink">{p.name}</h3>
+                  <p className="text-xs text-pru-slate mt-0.5">{p.tagline}</p>
+                  <div className="mt-3 flex items-center justify-between text-[11px] text-pru-slate font-mono">
+                    <span>{p.docRef}</span>
+                    <span>{p.pages} pp · {p.premiumFrom}</span>
+                  </div>
                 </button>
-              )
-            }
-          />
-          <SourceTabs
-            tab={tab}
-            onChange={setTab}
-            catalogueCount={policies.length}
-            uploadName={upload?.name}
-            historyCount={history.length}
-          />
-
-          {tab === 'catalogue' && (
-            <div className="animate-fade-up">
-              <p className="mb-3 flex items-center gap-1.5 text-xs text-pru-slate">
-                <Icon name="lock" className="w-3.5 h-3.5 text-good shrink-0" />
-                Prudential’s own policies ship with an approved plain-English breakdown — no AI generation needed.
-              </p>
-              <div className="grid sm:grid-cols-2 gap-3">
-                {policies.map((p) => (
-                  <button
-                    key={p.id}
-                    onClick={() => setSelected(p.id)}
-                    className={`card p-4 text-left transition-all hover:-translate-y-0.5 ${
-                      selected === p.id ? 'ring-2 ring-pru-red border-pru-red' : 'hover:shadow-pop'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <Badge tone="slate">{p.category}</Badge>
-                      {selected === p.id && <Icon name="check" className="w-5 h-5 text-pru-red" strokeWidth={3} />}
-                    </div>
-                    <h3 className="mt-2 font-extrabold text-pru-ink">{p.name}</h3>
-                    <p className="text-xs text-pru-slate mt-0.5">{p.tagline}</p>
-                    <div className="mt-3 flex items-center justify-between text-[11px] text-pru-slate font-mono">
-                      <span>{p.docRef}</span>
-                      <span>{p.pages} pp · {p.premiumFrom}</span>
-                    </div>
-                  </button>
-                ))}
-              </div>
+              ))}
             </div>
-          )}
+          </div>
+        )}
 
-          {tab === 'upload' && (
-            <UploadPanel file={upload} onFile={setUpload} onClear={() => setUpload(null)} />
-          )}
+        {tab === 'upload' && (
+          <UploadPanel file={upload} onFile={setUpload} onClear={() => setUpload(null)} />
+        )}
 
-          {tab === 'history' && (
-            <HistoryPanel
-              entries={history}
-              onOpen={reopen}
-              onClear={() => setHistory(clearHistory())}
-            />
-          )}
-        </div>
+        {tab === 'history' && (
+          <HistoryPanel
+            entries={history}
+            onOpen={reopen}
+            onClear={() => setHistory(clearHistory())}
+          />
+        )}
       </div>
-
-      <SkillCard skill={skills.simplify} accentTitle="simplify.SKILLS.md" live={phase === 'running'} />
 
       {phase === 'running' && (
         <LoadingOverlay
@@ -182,7 +180,7 @@ function SourceTabs({ tab, onChange, catalogueCount, uploadName, historyCount })
     { key: 'history', icon: 'history', label: 'History', hint: `${historyCount} recent` },
   ]
   return (
-    <div className="mb-4 flex flex-wrap gap-1.5 rounded-2xl border border-pru-line bg-white p-1.5 shadow-card">
+    <div className="mb-4 flex flex-wrap gap-1.5 rounded-lg border border-pru-line bg-white p-1.5 shadow-card">
       {tabs.map((t) => {
         const active = tab === t.key
         return (
@@ -190,7 +188,7 @@ function SourceTabs({ tab, onChange, catalogueCount, uploadName, historyCount })
             key={t.key}
             onClick={() => onChange(t.key)}
             aria-pressed={active}
-            className={`flex-1 flex items-center gap-2.5 rounded-xl px-4 py-2.5 text-left transition-all ${
+            className={`flex-1 flex items-center gap-2.5 rounded-md px-4 py-2.5 text-left transition-all ${
               active
                 ? 'bg-pru-red text-white shadow-sm'
                 : 'text-pru-slate hover:text-pru-ink hover:bg-pru-mist'
@@ -220,7 +218,7 @@ function HistoryPanel({ entries, onOpen, onClear }) {
   if (!entries.length) {
     return (
       <div className="card p-8 flex flex-col items-center text-center animate-fade-up">
-        <div className="w-12 h-12 rounded-xl bg-pru-mist text-pru-slate flex items-center justify-center">
+        <div className="w-12 h-12 rounded-md bg-pru-mist text-pru-slate flex items-center justify-center">
           <Icon name="history" className="w-6 h-6" />
         </div>
         <div className="mt-3 font-extrabold text-pru-ink">No analyses yet</div>
@@ -249,7 +247,7 @@ function HistoryPanel({ entries, onOpen, onClear }) {
               className="card w-full p-4 text-left flex items-center gap-4 transition-all hover:-translate-y-0.5 hover:shadow-pop"
             >
               <div
-                className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${
+                className={`w-11 h-11 rounded-md flex items-center justify-center shrink-0 ${
                   uploaded ? 'bg-info-soft text-info' : 'bg-bad-soft text-pru-red'
                 }`}
               >
@@ -324,7 +322,7 @@ function UploadPanel({ file, onFile, onClear }) {
     return (
       <div className="card p-5 animate-fade-up">
         <div className="flex items-center gap-4">
-          <div className="w-11 h-11 rounded-xl bg-bad-soft text-pru-red flex items-center justify-center shrink-0">
+          <div className="w-11 h-11 rounded-md bg-bad-soft text-pru-red flex items-center justify-center shrink-0">
             <Icon name="upload" className="w-5 h-5" />
           </div>
           <div className="min-w-0 flex-1">
@@ -351,7 +349,7 @@ function UploadPanel({ file, onFile, onClear }) {
       <div className="animate-fade-up">
         <div className="card p-5 ring-2 ring-pru-red border-pru-red">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-bad-soft text-pru-red flex items-center justify-center shrink-0">
+            <div className="w-12 h-12 rounded-md bg-bad-soft text-pru-red flex items-center justify-center shrink-0">
               <Icon name="doc" className="w-6 h-6" />
             </div>
             <div className="min-w-0 flex-1">
@@ -362,7 +360,7 @@ function UploadPanel({ file, onFile, onClear }) {
             <button
               onClick={onClear}
               aria-label="Remove uploaded file"
-              className="w-8 h-8 rounded-lg text-pru-slate hover:bg-pru-mist hover:text-pru-ink flex items-center justify-center shrink-0 transition-colors"
+              className="w-8 h-8 rounded text-pru-slate hover:bg-pru-mist hover:text-pru-ink flex items-center justify-center shrink-0 transition-colors"
             >
               <Icon name="x" className="w-4 h-4" strokeWidth={2.4} />
             </button>
@@ -405,14 +403,14 @@ function UploadPanel({ file, onFile, onClear }) {
           setDragging(false)
           accept(e.dataTransfer.files?.[0])
         }}
-        className={`w-full rounded-2xl border-2 border-dashed px-6 py-12 flex flex-col items-center text-center transition-all ${
+        className={`w-full rounded-lg border-2 border-dashed px-6 py-12 flex flex-col items-center text-center transition-all ${
           dragging
             ? 'border-pru-red bg-bad-soft scale-[1.01]'
             : 'border-pru-line bg-white hover:border-pru-red hover:bg-bad-soft/30'
         }`}
       >
         <div
-          className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all ${
+          className={`w-16 h-16 rounded-lg flex items-center justify-center transition-all ${
             dragging ? 'bg-pru-red text-white scale-110' : 'bg-pru-mist text-pru-slate'
           }`}
         >
@@ -545,8 +543,8 @@ function Result({ policy }) {
         <SectionTitle kicker="Flagged honestly" title="Exclusions — read these" icon="alert" />
         <div className="grid sm:grid-cols-2 gap-3">
           {policy.exclusions.map((e, i) => (
-            <div key={i} className="rounded-xl border border-pru-line p-3.5 flex gap-3">
-              <div className={`mt-0.5 w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
+            <div key={i} className="rounded-md border border-pru-line p-3.5 flex gap-3">
+              <div className={`mt-0.5 w-8 h-8 rounded flex items-center justify-center shrink-0 ${
                 e.severity === 'high' ? 'bg-bad-soft text-bad' : e.severity === 'medium' ? 'bg-warn-soft text-warn' : 'bg-pru-mist text-pru-slate'
               }`}>
                 <Icon name="alert" className="w-4 h-4" />
@@ -578,7 +576,7 @@ function Result({ policy }) {
         </div>
         <div className="card p-5">
           <SectionTitle kicker="Source clause" title="Original policy language" icon="lock" />
-          <div className="rounded-xl bg-pru-mist border border-pru-line p-4 text-[13px] text-pru-slate leading-relaxed font-mono max-h-56 overflow-y-auto">
+          <div className="rounded-md bg-pru-mist border border-pru-line p-4 text-[13px] text-pru-slate leading-relaxed font-mono max-h-56 overflow-y-auto">
             “{policy.raw}”
           </div>
           <p className="mt-2 text-[11px] text-pru-slate">The agent simplified this clause above — original kept for transparency.</p>

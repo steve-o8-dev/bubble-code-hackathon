@@ -35,10 +35,10 @@ body {
 
 @layer components {
   .card {
-    @apply rounded-2xl bg-white border border-pru-line shadow-card;
+    @apply rounded-lg bg-white border border-pru-line shadow-card;
   }
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed;
   }
   .btn-primary {
     @apply btn bg-pru-red text-white hover:bg-pru-red-600 active:bg-pru-red-700 shadow-sm;

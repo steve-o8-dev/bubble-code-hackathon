@@ -32,17 +32,19 @@ export default function Discover() {
     <div className="flex items-start justify-between flex-wrap gap-4">
       <div>
         <Badge tone="red" icon="discover">Discover Agent · Needs Profiler</Badge>
-        <h1 className="mt-2 text-2xl font-extrabold text-pru-ink">Coverage gaps & follow-up questions</h1>
-        <p className="text-pru-slate mt-1 max-w-2xl">
-          Client data is auto-pulled via Singpass MCP (no long forms). The agent maps coverage owned vs needed and
-          drafts the smart questions you should ask next.
+        <h1 className="mt-1 text-[22px] font-extrabold text-pru-ink">Coverage gaps & follow-up questions</h1>
+        <p className="text-sm text-pru-slate mt-1 max-w-4xl">
+          Client data is auto-pulled via Singpass MCP — the agent maps coverage gaps and drafts your follow-up questions.
         </p>
       </div>
-      {phase !== 'select' && (
-        <button onClick={reset} className="btn-ghost">
-          <Icon name="arrow" className="w-4 h-4 rotate-180" /> New analysis
-        </button>
-      )}
+      <div className="flex items-center gap-3">
+        {phase !== 'select' && (
+          <button onClick={reset} className="btn-ghost">
+            <Icon name="arrow" className="w-4 h-4 rotate-180" /> New analysis
+          </button>
+        )}
+        <SkillCard skill={skills.discover} accentTitle="discover.SKILLS.md" live={phase === 'running'} />
+      </div>
     </div>
   )
 
@@ -57,50 +59,46 @@ export default function Discover() {
   }
 
   return (
-    <div className="grid lg:grid-cols-3 gap-5 items-start">
-      <div className="lg:col-span-2 space-y-6">
-        {header}
-        <FlowSteps phase={phase} />
+    <div className="space-y-6">
+      {header}
+      <FlowSteps phase={phase} />
 
-        <div>
-          <SectionTitle
-            kicker="Step 1"
-            title="Select a client"
-            icon="user"
-            right={
-              <button disabled={!selected} onClick={() => setPhase('running')} className="btn-primary">
-                <Icon name="bolt" className="w-4 h-4" /> Start analysis
-              </button>
-            }
-          />
-          <div className="space-y-3">
-            {clients.map((c) => (
-              <button
-                key={c.id}
-                onClick={() => setSelected(c.id)}
-                className={`card w-full p-4 text-left flex items-center gap-4 transition-all hover:-translate-y-0.5 ${
-                  selected === c.id ? 'ring-2 ring-pru-red border-pru-red' : 'hover:shadow-pop'
-                }`}
-              >
-                <div className={`w-12 h-12 rounded-full ${c.avatarTone} text-white flex items-center justify-center font-bold shrink-0`}>
-                  {c.name.split(' ').map((w) => w[0]).slice(0, 2).join('')}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="font-extrabold text-pru-ink">{c.name}</div>
-                  <div className="text-xs text-pru-slate">{c.age} · {c.lifeStage} · {c.occupation}</div>
-                </div>
-                <div className="hidden sm:block text-right">
-                  <div className="text-xs font-mono text-pru-slate">{c.nric}</div>
-                  <div className="text-xs text-pru-slate">{sgd(c.singpass.annualIncome)}/yr · {c.singpass.dependents} dep.</div>
-                </div>
-                {selected === c.id && <Icon name="check" className="w-5 h-5 text-pru-red shrink-0" strokeWidth={3} />}
-              </button>
-            ))}
-          </div>
+      <div className="card p-5">
+        <SectionTitle
+          kicker="Step 1"
+          title="Select a client"
+          icon="user"
+          right={
+            <button disabled={!selected} onClick={() => setPhase('running')} className="btn-primary">
+              <Icon name="bolt" className="w-4 h-4" /> Start analysis
+            </button>
+          }
+        />
+        <div className="space-y-3">
+          {clients.map((c) => (
+            <button
+              key={c.id}
+              onClick={() => setSelected(c.id)}
+              className={`card w-full p-4 text-left flex items-center gap-4 transition-all hover:-translate-y-0.5 ${
+                selected === c.id ? 'ring-2 ring-pru-red border-pru-red' : 'hover:shadow-pop'
+              }`}
+            >
+              <div className={`w-12 h-12 rounded-full ${c.avatarTone} text-white flex items-center justify-center font-bold shrink-0`}>
+                {c.name.split(' ').map((w) => w[0]).slice(0, 2).join('')}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="font-extrabold text-pru-ink">{c.name}</div>
+                <div className="text-xs text-pru-slate">{c.age} · {c.lifeStage} · {c.occupation}</div>
+              </div>
+              <div className="hidden sm:block text-right">
+                <div className="text-xs font-mono text-pru-slate">{c.nric}</div>
+                <div className="text-xs text-pru-slate">{sgd(c.singpass.annualIncome)}/yr · {c.singpass.dependents} dep.</div>
+              </div>
+              {selected === c.id && <Icon name="check" className="w-5 h-5 text-pru-red shrink-0" strokeWidth={3} />}
+            </button>
+          ))}
         </div>
       </div>
-
-      <SkillCard skill={skills.discover} accentTitle="discover.SKILLS.md" live={phase === 'running'} />
 
       {phase === 'running' && (
         <LoadingOverlay
@@ -162,7 +160,7 @@ function Result({ client, analysis, onRecommend }) {
           <SectionTitle kicker="Output" title="Client needs profile" icon="discover" />
           <div className="grid sm:grid-cols-2 gap-3">
             {Object.entries(analysis.needsProfile).map(([k, v]) => (
-              <div key={k} className="rounded-xl bg-pru-mist border border-pru-line p-3">
+              <div key={k} className="rounded-md bg-pru-mist border border-pru-line p-3">
                 <div className="label-kicker">{k.replace(/([A-Z])/g, ' $1')}</div>
                 <div className="text-sm font-semibold text-pru-ink mt-0.5">{v}</div>
               </div>
@@ -187,7 +185,7 @@ function Result({ client, analysis, onRecommend }) {
           </h3>
           <ul className="space-y-3">
             {analysis.strengths.map((s, i) => (
-              <li key={i} className="rounded-xl border border-pru-line p-3">
+              <li key={i} className="rounded-md border border-pru-line p-3">
                 <div className="text-sm font-semibold text-pru-ink">{s.item}</div>
                 <div className="text-xs text-pru-slate">{s.detail}</div>
               </li>
@@ -207,7 +205,7 @@ function Result({ client, analysis, onRecommend }) {
           </h3>
           <div className="space-y-3">
             {analysis.gaps.map((g, i) => (
-              <div key={i} className="rounded-xl border border-pru-line p-3.5">
+              <div key={i} className="rounded-md border border-pru-line p-3.5">
                 <div className="flex items-center justify-between gap-2">
                   <span className="font-bold text-pru-ink text-sm">{g.item}</span>
                   <div className="flex items-center gap-2">
@@ -227,7 +225,7 @@ function Result({ client, analysis, onRecommend }) {
         <SectionTitle kicker="Ask the client" title="Smart follow-up questions" icon="spark" />
         <div className="space-y-3">
           {analysis.followUps.map((f, i) => (
-            <div key={i} className="flex gap-3 rounded-xl border border-pru-line p-4 hover:border-pru-red transition-colors">
+            <div key={i} className="flex gap-3 rounded-md border border-pru-line p-4 hover:border-pru-red transition-colors">
               <div className="w-7 h-7 rounded-full bg-pru-red text-white font-bold text-sm flex items-center justify-center shrink-0">
                 {i + 1}
               </div>
@@ -298,7 +296,7 @@ function HolisticMap({ clientId }) {
 
       <div className="flex flex-col lg:flex-row gap-5">
         {/* Overall protection score */}
-        <div className="lg:w-64 shrink-0 rounded-xl bg-pru-ink text-white p-5 flex flex-col items-center text-center">
+        <div className="lg:w-64 shrink-0 rounded-md bg-pru-ink text-white p-5 flex flex-col items-center text-center">
           <div className="label-kicker text-white/50">Protection score</div>
           <div className="relative my-3" style={{ width: 120, height: 120 }}>
             <svg width="120" height="120" className="-rotate-90">
@@ -335,7 +333,7 @@ function HolisticMap({ clientId }) {
             const cell = data.map[p.key]
             const meta = statusMeta[cell.status]
             return (
-              <div key={p.key} className={`rounded-xl border p-3 ${toneClasses[meta.tone]}`}>
+              <div key={p.key} className={`rounded-md border p-3 ${toneClasses[meta.tone]}`}>
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2 min-w-0">
                     <Icon name={p.icon} className="w-4 h-4 shrink-0" />

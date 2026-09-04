@@ -6,6 +6,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
       "port": 5173
+    },
+    {
+      "name": "pru-navigator-mui",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "mui-copy", "run", "dev"],
+      "port": 5174
     }
   ]
 }
