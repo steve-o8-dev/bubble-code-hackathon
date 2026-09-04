@@ -414,30 +414,34 @@ function UploadPanel({ file, onFile, onClear }) {
           setDragging(false)
           accept(e.dataTransfer.files?.[0])
         }}
-        className={`w-full rounded-lg border-2 border-dashed px-6 py-12 flex flex-col items-center text-center transition-all ${
+        className={`w-full rounded-lg border-2 border-dashed px-6 py-8 flex flex-wrap items-center justify-between gap-4 text-left transition-all ${
           dragging
-            ? 'border-pru-red bg-bad-soft scale-[1.01]'
+            ? 'border-pru-red bg-bad-soft'
             : 'border-pru-line bg-white hover:border-pru-red hover:bg-bad-soft/30'
         }`}
       >
-        <div
-          className={`w-16 h-16 rounded-lg flex items-center justify-center transition-all ${
-            dragging ? 'bg-pru-red text-white scale-110' : 'bg-pru-mist text-pru-slate'
-          }`}
-        >
-          <Icon name="upload" className="w-7 h-7" strokeWidth={2} />
+        <div className="flex items-center gap-4 min-w-0">
+          <div
+            className={`w-12 h-12 rounded-lg flex items-center justify-center shrink-0 transition-all ${
+              dragging ? 'bg-pru-red text-white' : 'bg-pru-mist text-pru-slate'
+            }`}
+          >
+            <Icon name="upload" className="w-6 h-6" strokeWidth={2} />
+          </div>
+          <div className="min-w-0">
+            <div className="font-extrabold text-pru-ink">
+              {dragging ? 'Drop to upload' : 'Upload policy'}
+            </div>
+            <div className="text-sm text-pru-slate">
+              Drag &amp; drop a PDF, or{' '}
+              <span className="text-pru-red font-bold underline underline-offset-2">browse your files</span>
+            </div>
+            <p className="mt-1 text-xs text-pru-slate">
+              The agent reads the document and returns the same plain-English breakdown, with every exclusion flagged.
+            </p>
+          </div>
         </div>
-        <div className="mt-4 text-lg font-extrabold text-pru-ink">
-          {dragging ? 'Drop to upload' : 'Drag & drop a policy PDF'}
-        </div>
-        <div className="mt-1 text-sm text-pru-slate">
-          or <span className="text-pru-red font-bold underline underline-offset-2">browse your files</span>
-        </div>
-        <p className="mt-4 text-xs text-pru-slate max-w-sm leading-relaxed">
-          Any insurer’s policy document — not just Prudential. The Simplify Agent reads it and returns the same
-          plain-English breakdown, with every exclusion flagged.
-        </p>
-        <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <span className="chip bg-pru-mist text-pru-slate border border-pru-line">PDF only</span>
           <span className="chip bg-pru-mist text-pru-slate border border-pru-line">Up to {MAX_MB} MB</span>
           <span className="chip bg-good-soft text-good">Not stored after the session</span>
