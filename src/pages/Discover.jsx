@@ -10,6 +10,11 @@ import { skills } from '../data/agents.js'
 
 const sgd = (n) => 'S$' + n.toLocaleString('en-SG')
 
+// The follow-ups are laid out as a McKinsey Situation-Complication-Question
+// ladder, so each one is tagged with the rung it belongs to.
+const scqStages = ['Situation', 'Complication', 'Question', 'Resolution']
+const scqStage = (i) => scqStages[Math.min(i, scqStages.length - 1)]
+
 export default function Discover() {
   const loc = useLocation()
   const navigate = useNavigate()
@@ -232,7 +237,22 @@ function Result({ client, analysis, onRecommend }) {
 
       {/* Follow-up questions */}
       <div className="card p-5">
-        <SectionTitle kicker="Ask the client" title="Smart follow-up questions" icon="spark" />
+        <SectionTitle
+          kicker="Ask the client"
+          icon="spark"
+          title={
+            <span className="flex items-center gap-2.5 flex-wrap">
+              Smart follow-up questions
+              <Badge tone="info" icon="scale" className="text-[17px] px-3 py-1 pb-1.5">
+                McKinsey SCQ framework
+              </Badge>
+            </span>
+          }
+        />
+        <p className="mt-1 mb-4 text-xs text-pru-slate">
+          Sequenced with McKinsey&rsquo;s Situation&ndash;Complication&ndash;Question structure and kept MECE, so the
+          questions cover the gaps without overlapping each other.
+        </p>
         <div className="space-y-3">
           {analysis.followUps.map((f, i) => (
             <div key={i} className="flex gap-3 rounded-md border border-pru-line p-4 hover:border-pru-red transition-colors">
@@ -240,7 +260,10 @@ function Result({ client, analysis, onRecommend }) {
                 {i + 1}
               </div>
               <div>
-                <p className="font-semibold text-pru-ink">{f.q}</p>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <p className="font-semibold text-pru-ink">{f.q}</p>
+                  <Badge tone="slate">{scqStage(i)}</Badge>
+                </div>
                 <p className="text-xs text-pru-slate mt-1 flex items-center gap-1.5">
                   <Icon name="spark" className="w-3.5 h-3.5 text-pru-red" /> Why ask: {f.why}
                 </p>

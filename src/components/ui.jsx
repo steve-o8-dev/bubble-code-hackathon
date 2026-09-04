@@ -1,17 +1,17 @@
 // Small shared presentational primitives.
 import Icon from './Icon.jsx'
 
-export function Badge({ tone = 'slate', children, icon }) {
+export function Badge({ tone = 'slate', children, icon, className = '' }) {
   const tones = {
     slate: 'bg-pru-mist text-pru-slate border border-pru-line',
     red: 'bg-bad-soft text-bad border border-bad',
     good: 'bg-good-soft text-good',
-    warn: 'bg-warn-soft text-warn',
-    info: 'bg-info-soft text-info',
+    warn: 'bg-warn-soft text-warn border border-warn',
+    info: 'bg-info-soft text-info border border-info',
     dark: 'bg-pru-ink text-white',
   }
   return (
-    <span className={`chip ${tones[tone]}`}>
+    <span className={`chip ${tones[tone]} ${className}`}>
       {icon && <Icon name={icon} className="w-3.5 h-3.5" strokeWidth={2.2} />}
       {children}
     </span>
