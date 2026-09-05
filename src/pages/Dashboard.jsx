@@ -48,7 +48,7 @@ export default function Dashboard() {
         <div className="relative">
           <Badge tone="red" icon="spark">3-Engine Agentic Architecture</Badge>
           <h1 className="mt-3 text-[26px] font-extrabold tracking-tight">
-            Cut client prep from <span className="text-pru-red">hours to minutes</span> without giving up control.
+            Cut client preparation from <span className="text-pru-red">hours to minutes</span> without giving up control.
           </h1>
           <p className="mt-2 text-[13px] text-white/60 max-w-2xl">
             PRU.NAVIGATOR prepares and shortlists. The MAS-licensed consultant review, adjust and approve.<br></br>
