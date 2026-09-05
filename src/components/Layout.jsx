@@ -4,10 +4,10 @@ import { consultant } from '../data/agents.js'
 
 const nav = [
   { to: '/', label: 'Dashboard', icon: 'dashboard', end: true },
-  { to: '/simplify', label: 'Simplify Agent', icon: 'simplify', tag: 'Policy Explainer' },
-  { to: '/discover', label: 'Discover Agent', icon: 'discover', tag: 'Needs Profiler' },
-  { to: '/recommend', label: 'Recommend Agent', icon: 'recommend', tag: 'Decision Aid' },
-  { to: '/audit', label: 'Audit & FEAT', icon: 'audit', tag: 'Governance' },
+  { to: '/simplify', label: 'Simplify Agent', icon: 'simplify' },
+  { to: '/discover', label: 'Discover Agent', icon: 'discover' },
+  { to: '/recommend', label: 'Recommend Agent', icon: 'recommend' },
+  { to: '/audit', label: 'Audit & FEAT', icon: 'audit' },
 ]
 
 function Wordmark() {
@@ -41,19 +41,13 @@ export default function Layout({ children }) {
               to={n.to}
               end={n.end}
               className={({ isActive }) =>
-                `group relative flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-semibold transition-colors ${
+                `flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-semibold transition-colors ${
                   isActive ? 'bg-pru-red text-white shadow-sm' : 'text-white/65 hover:text-white hover:bg-white/5'
                 }`
               }
             >
               <Icon name={n.icon} className="w-5 h-5 shrink-0" />
               <span className="flex-1">{n.label}</span>
-              {n.tag && (
-                <span className="pointer-events-none absolute left-full top-1/2 z-[100] ml-3 -translate-y-1/2 whitespace-nowrap rounded bg-pru-ink-soft px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wide text-white opacity-0 shadow-pop ring-1 ring-white/10 transition-opacity duration-150 group-hover:opacity-100">
-                  {n.tag}
-                  <span className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-pru-ink-soft" />
-                </span>
-              )}
             </NavLink>
           ))}
         </nav>
